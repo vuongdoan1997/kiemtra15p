@@ -196,17 +196,18 @@
     </div>
 
     <script>
-        // --- CẤU HÌNH GOOGLE FORM CỦA BẠN ---
+        // --- CẤU HÌNH GOOGLE FORM CỦA BẠN (Đã trích xuất từ mã HTML bạn gửi) ---
         // Action URL của Form (địa chỉ nhận phản hồi)
         const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc09y40H6BEgtLqI3R1Q04F8kljeqHX4Bij1G7sIlqk_Fmw5A/formResponse";
         
         // Entry ID của các trường nhập liệu trong Form của bạn
-        // Chú ý: Dữ liệu Tên thí sinh được gửi vào trường "Trường" trong Form
-        const ENTRY_ID_SCHOOL = "entry.699633454"; // Trường
-        const ENTRY_ID_CLASS = "entry.371774655";  // Lớp
-        const ENTRY_ID_SCORE = "entry.46168601";   // Điểm
+        // Chú ý: Vì Form bạn chỉ có 3 trường, chúng ta sẽ ánh xạ:
+        // Họ tên + Trường (trong quiz) -> Trường (Entry ID 699633454)
+        const ENTRY_ID_SCHOOL = "entry.699633454"; 
+        const ENTRY_ID_CLASS = "entry.371774655";  
+        const ENTRY_ID_SCORE = "entry.46168601";   
 
-        // --- KHỐI DỮ LIỆU CÂU HỎI (Được giữ nguyên) ---
+        // --- KHỐI DỮ LIỆU CÂU HỎI (Được giữ nguyên từ Form gốc) ---
         const quizData = {
             part1: [
                 { id: 'q1', question: 'Cơ chế giúp hệ điều hành tự động nhận biết thiết bị ngoại vi khi được kết nối vào máy tính được gọi là gì?', options: ['Giao diện đồ hoạ (GUI)', 'Plug & Play (Cắm và chạy)', 'Đa nhiệm (Multitasking)', 'Mã nguồn mở (Open Source)'], answer: 'Plug & Play (Cắm và chạy)', explanation: 'Tài liệu nêu rõ cơ chế "plug & play" giúp hệ điều hành tự động nhận biết thiết bị ngoại vi khi khởi động máy tính.' },
@@ -252,7 +253,7 @@
         // --- KHỐI DỮ LIỆU CÂU HỎI KẾT THÚC ---
 
 
-        // --- KHỐI MÃ NGUỒN CHỨC NĂNG (Đã được điều chỉnh để gửi Form) ---
+        // --- KHỐI MÃ NGUỒN CHỨC NĂNG VÀ LOGIC GỬI FORM ---
         let studentName = '', studentSchool = '', studentClass = '';
         const timeLimit = 15 * 60;
         let timeLeft = timeLimit;
@@ -321,13 +322,12 @@
             timerInterval = setInterval(() => {
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    // Tự động nộp bài khi hết giờ
                     if (document.getElementById('quizForm')) {
                         submitQuiz(new Event('submit'));
                     }
                     return;
                 }
-                timeLeft--; // Giảm thời gian trước để hiển thị đúng
+                timeLeft--; 
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -370,9 +370,9 @@
             resultSection.style.display = 'block';
             document.querySelector('.submit-btn').style.display = 'none';
 
-            // --- PHẦN CHẤM ĐIỂM ---
+            // --- PHẦN CHẤM ĐIỂM VÀ LƯU ĐIỂM ---
             
-            // Phần I: Trắc nghiệm 1 lựa chọn (0.5 điểm/câu)
+            // Tính tổng điểm
             shuffledPart1Data.forEach((q, index) => {
                 const selectedOption = document.querySelector(`input[name="${q.id}"]:checked`);
                 const userAnswer = selectedOption ? selectedOption.value : null;
@@ -384,7 +384,6 @@
                 // ... (Code hiển thị kết quả chi tiết trên trang web)
             });
 
-            // Phần II: Trắc nghiệm Đúng/Sai (Điểm thưởng)
             shuffledPart2Data.forEach((q, index) => {
                 let correctCount = 0;
                 // ... (Code tính correctCount)
@@ -392,22 +391,22 @@
                 score += questionScore;
                 // ... (Code hiển thị kết quả chi tiết trên trang web)
             });
-
+            
             // --- BẮT ĐẦU GỬI DỮ LIỆU ĐẾN GOOGLE FORM ---
             
             const formattedScore = score.toFixed(2);
             
-            // Xây dựng dữ liệu Form (sử dụng URLSearchParams)
+            // Xây dựng dữ liệu Form 
             const formData = new URLSearchParams();
-            // Gửi thông tin Tên thí sinh và Tên trường vào cùng trường "Trường" để tránh mất dữ liệu.
-            formData.append(ENTRY_ID_SCHOOL, `${studentName} - ${studentSchool}`); // Trường
-            formData.append(ENTRY_ID_CLASS, studentClass);                       // Lớp
-            formData.append(ENTRY_ID_SCORE, formattedScore);                     // Điểm
+            // Gửi dữ liệu Tên thí sinh + Trường vào trường "Trường" trong Form
+            formData.append(ENTRY_ID_SCHOOL, `Tên: ${studentName} - Trường: ${studentSchool}`); 
+            formData.append(ENTRY_ID_CLASS, studentClass);                       
+            formData.append(ENTRY_ID_SCORE, formattedScore);                     
 
             // Gửi dữ liệu bằng Fetch API
             fetch(GOOGLE_FORM_ACTION_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Rất quan trọng để Form có thể nhận dữ liệu
+                mode: 'no-cors', 
                 body: formData
             })
             .then(() => {
@@ -423,7 +422,7 @@
             resultSection.scrollIntoView({ behavior: 'smooth' });
         }
         
-        // --- SỰ KIỆN CHÍNH ĐỂ CHẠY ỨNG DỤNG ---
+        // --- KHỞI CHẠY ---
         document.addEventListener('DOMContentLoaded', () => {
             const startBtn = document.getElementById('startBtn');
             const userInfoContainer = document.getElementById('userInfoFormContainer');
@@ -455,7 +454,6 @@
                 quizForm.addEventListener('submit', submitQuiz);
             }
         });
-        // --- KHỐI MÃ NGUỒN CHỨC NĂNG KẾT THÚC ---
     </script>
 </body>
 </html>
