@@ -1,0 +1,570 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÔN TẬP TRẮC NGHIỆM TIN 11 - BÀI 1 (HỆ ĐIỀU HÀNH)</title>
+    <style>
+        /* CSS được tinh chỉnh để bài quiz hiển thị độc lập */
+        body {
+            font-family: cambria, Arial, sans-serif;
+            font-size: 14pt;
+            line-height: 1.3;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px; /* Tăng chiều rộng để dễ nhìn hơn */
+            margin: auto;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        /* CSS cho Form Thông tin Thí sinh */
+        #userInfoFormContainer {
+            padding: 30px;
+        }
+
+        #userInfoForm .form-group {
+            margin-bottom: 20px;
+        }
+
+        #userInfoForm label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        #userInfoForm input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14pt;
+            font-family: cambria;
+        }
+
+        #userInfoForm .start-btn {
+            display: block;
+            width: 220px;
+            padding: 12px;
+            font-size: 16px;
+            font-family: cambria;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px auto 0;
+            transition: background-color 0.3s;
+        }
+
+            #userInfoForm .start-btn:hover {
+                background-color: #218838;
+            }
+
+        /* CSS chung cho bài Quiz */
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 0px;
+        }
+
+        h2 {
+            color: #0056b3;
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #F2F2F2;
+            padding: 10px 15px;
+            border-bottom: 4px solid #d9534f;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+            margin: -10px -10px 20px -10px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .question {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+            .question p {
+                font-weight: bold;
+                margin-bottom: 10px;
+                margin-top: 0px;
+            }
+
+        .options-container {
+            display: grid;
+            gap: 5px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .option-label:hover {
+                background-color: #e9e9e9;
+            }
+
+            .option-label input {
+                margin-right: 10px;
+            }
+
+        .submit-btn {
+            display: block;
+            width: 220px;
+            padding: 10px;
+            font-size: 16px;
+            font-family: cambria;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px auto 0;
+            transition: background-color 0.3s;
+        }
+
+            .submit-btn:hover {
+                background-color: #0056b3;
+            }
+
+        /* CSS cho phần Kết quả */
+        .results {
+            margin-top: 30px;
+            border-top: 2px solid #333;
+            padding-top: 20px;
+            display: none;
+        }
+
+        #studentInfoResults {
+            font-size: 16pt;
+            padding: 1px 15px;
+            background-color: #eaf2f9;
+            border-left: 5px solid #007BFF;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 5px solid;
+            background-color: #fafafa;
+        }
+
+            .result-item.correct {
+                border-left-color: #28a745;
+            }
+
+            .result-item.incorrect {
+                border-left-color: #dc3545;
+            }
+
+        .explanation {
+            font-style: italic;
+            color: #555;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #eaf2f9;
+            border-radius: 4px;
+        }
+
+        .correct-answer-text {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .your-answer-text {
+            font-weight: bold;
+            color: #dc3545;
+        }
+
+        .true-false-container {
+            margin-top: 15px;
+        }
+
+            .true-false-container .option-label {
+                display: inline-flex;
+                width: auto;
+                margin-right: 10px;
+            }
+
+            .true-false-container .sub-question-text {
+                font-weight: normal;
+            }
+
+        .option-label.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .option-label.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="userInfoFormContainer">
+            <h1>THÔNG TIN THÍ SINH</h1>
+            <h2>Vui lòng điền đầy đủ thông tin bên dưới</h2>
+            <div id="userInfoForm">
+                <div class="form-group">
+                    <label for="studentName">Họ và tên thí sinh:</label>
+                    <input type="text" id="studentName" name="studentName" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentSchool">Trường:</label>
+                    <input type="text" id="studentSchool" name="studentSchool" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentClass">Lớp:</label>
+                    <input type="text" id="studentClass" name="studentClass" required>
+                </div>
+                <button type="button" id="startBtn" class="start-btn"><b>Bắt đầu làm bài</b></button>
+            </div>
+        </div>
+
+        <div id="quizContainer" style="display:none;">
+            <h1>ÔN TẬP TRẮC NGHIỆM</h1>
+            <h2>Bài 1. HỆ ĐIỀU HÀNH</h2>
+
+            <div class="timer">Thời gian còn lại: <span id="countdown">15:00</span></div>
+
+            <form id="quizForm">
+
+                <div style="background-color: azure; color: green; padding: 5px; text-align: justify;">
+                    <b>PHẦN I. Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu thí sinh chỉ chọn một phương án.</b>
+                </div>
+                <div id="part1-questions"></div>
+
+                <div style="background-color: azure; color: green; padding: 5px; text-align: justify;">
+                    <b>PHẦN II. Thí sinh trả lời từ câu 13 đến câu 16. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai</b>
+                </div>
+                <div id="part2-questions"></div>
+
+                <button type="submit" class="submit-btn"><b>Nộp bài và xem kết quả</b></button>
+            </form>
+
+            <div class="results" id="results">
+                <h2>THÔNG TIN BÀI LÀM CỦA BẠN</h2>
+                <div id="studentInfoResults"></div>
+                <div id="score"></div>
+                <div id="resultDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>// --- KHỐI DỮ LIỆU CÂU HỎI (Được giữ nguyên từ nội dung đã gửi) ---
+        const quizData = {
+            part1: [
+                { id: 'q1', question: 'Cơ chế giúp hệ điều hành tự động nhận biết thiết bị ngoại vi khi được kết nối vào máy tính được gọi là gì?', options: ['Giao diện đồ hoạ (GUI)', 'Plug & Play (Cắm và chạy)', 'Đa nhiệm (Multitasking)', 'Mã nguồn mở (Open Source)'], answer: 'Plug & Play (Cắm và chạy)', explanation: 'Tài liệu nêu rõ cơ chế "plug & play" giúp hệ điều hành tự động nhận biết thiết bị ngoại vi khi khởi động máy tính.' },
+                { id: 'q2', question: 'Hệ điều hành nào sau đây là một hệ điều hành mã nguồn mở có nguồn gốc từ UNIX?', options: ['Windows XP', 'macOS', 'LINUX', 'iOS'], answer: 'LINUX', explanation: 'Tài liệu cho biết LINUX có nguồn gốc từ hệ điều hành UNIX và được công bố dưới dạng mã nguồn mở.' },
+                { id: 'q3', question: 'Hai hệ điều hành phổ biến nhất cho thiết bị di động được đề cập trong bài là gì?', options: ['Windows và LINUX', 'iOS và Android', 'UNIX và DOS', 'macOS và Ubuntu'], answer: 'iOS và Android', explanation: 'Bài học nêu rõ hai hệ điều hành phổ biến hơn cả cho thiết bị di động là iOS của Apple và Android của Google.' },
+                { id: 'q4', question: 'Trong mối quan hệ giữa các thành phần của hệ thống máy tính, hệ điều hành đóng vai trò là gì?', options: ['Lớp trên cùng, giao tiếp trực tiếp với người dùng.', 'Một phần mềm ứng dụng chuyên dụng.', 'Môi trường trung gian giúp phần mềm ứng dụng khai thác phần cứng.', 'Một thành phần của phần cứng.'], answer: 'Môi trường trung gian giúp phần mềm ứng dụng khai thác phần cứng.', explanation: 'Tài liệu và hình 1.4 mô tả hệ điều hành là môi trường trung gian giúp phần mềm ứng dụng khai thác phần cứng.' },
+                { id: 'q5', question: 'Phiên bản Windows nào được xem là một trong những phiên bản thành công nhất của Microsoft với số người dùng rất lớn và có nâng cấp quan trọng cho bộ xử lí 64 bit?', options: ['Windows 3.1', 'Windows 95', 'Windows XP', 'Windows 1.0'], answer: 'Windows XP', explanation: 'Tài liệu khẳng định Windows XP (2001) là một trong các phiên bản hệ điều hành thành công nhất của Microsoft và có nâng cấp quan trọng để chạy trên các bộ xử lí 64 bit.' },
+                { id: 'q6', question: 'Tại sao giao diện đồ hoạ (GUI) được coi là thân thiện với người dùng hơn so với giao diện dòng lệnh (CLI)?', options: ['Vì nó yêu cầu người dùng phải nhớ chính xác cú pháp câu lệnh.', 'Vì nó có tính trực quan, sử dụng hình ảnh, biểu tượng, cửa sổ giúp người dùng giao tiếp với máy dễ dàng hơn.', 'Vì nó chỉ hoạt động với chuột mà không cần bàn phím.', 'Vì nó xử lí thông tin nhanh hơn giao diện dòng lệnh.'], answer: 'Vì nó có tính trực quan, sử dụng hình ảnh, biểu tượng, cửa sổ giúp người dùng giao tiếp với máy dễ dàng hơn.', explanation: 'Bài học giải thích rằng giao diện đồ hoạ có tính trực quan, giúp người sử dụng giao tiếp với máy dễ dàng hơn so với việc phải gõ lệnh chính xác trong giao diện dòng lệnh.' },
+                { id: 'q7', question: 'Đặc điểm nào giải thích tại sao hệ điều hành cho thiết bị di động lại ưu tiên khả năng kết nối mạng không dây?', options: ['Vì thiết bị di động luôn được đặt ở một vị trí cố định.', 'Vì màn hình của thiết bị di động nhỏ.', 'Do tính di động, người dùng cần kết nối mạng ở mọi nơi, nên hệ điều hành chú trọng đến wifi, 3G/4G/5G, bluetooth.', 'Vì kết nối không dây an toàn hơn kết nối có dây.'], answer: 'Do tính di động, người dùng cần kết nối mạng ở mọi nơi, nên hệ điều hành chú trọng đến wifi, 3G/4G/5G, bluetooth.', explanation: 'Tài liệu nêu rõ: "Do tính di động mà hệ điều hành cho thiết bị di động chú trọng đến khả năng kết nối mạng không dây".' },
+                { id: 'q8', question: 'Ý nghĩa quan trọng nhất của việc hệ điều hành Windows 95 tích hợp trực tiếp nhiều tính năng cơ bản là gì?', options: ['Làm cho hệ điều hành chạy chậm hơn.', 'Windows không còn là một vỏ bọc đồ hoạ phụ thuộc vào DOS nữa, mà trở thành một hệ điều hành hoàn chỉnh hơn.', 'Loại bỏ hoàn toàn giao diện đồ hoạ.', 'Bắt buộc người dùng phải sử dụng giao diện dòng lệnh.'], answer: 'Windows không còn là một vỏ bọc đồ hoạ phụ thuộc vào DOS nữa, mà trở thành một hệ điều hành hoàn chỉnh hơn.', explanation: 'Bài học chỉ ra rằng trước Windows 95, Windows về cơ bản chỉ là một vỏ bọc đồ hoạ của DOS. Từ phiên bản 95, nhiều tính năng cơ bản của hệ điều hành mới được tích hợp trực tiếp vào Windows.' },
+                { id: 'q9', question: 'Vì sao các thiết bị đa năng như máy tính cá nhân cần phải có hệ điều hành, trong khi thiết bị chuyên dụng như lò vi sóng thì không?', options: ['Vì máy tính đắt tiền hơn lò vi sóng.', 'Vì người dùng máy tính có nhu cầu cài và chạy nhiều phần mềm ứng dụng khác nhau, đòi hỏi phải có một hệ thống để quản lí tài nguyên và tổ chức dữ liệu.', 'Vì lò vi sóng không sử dụng điện.', 'Vì máy tính luôn kết nối mạng, còn lò vi sóng thì không.'], answer: 'Vì người dùng máy tính có nhu cầu cài và chạy nhiều phần mềm ứng dụng khác nhau, đòi hỏi phải có một hệ thống để quản lí tài nguyên và tổ chức dữ liệu.', explanation: 'Tài liệu giải thích rằng các thiết bị đa năng cần hệ điều hành để đáp ứng nhu cầu nạp nhiều phần mềm, tổ chức dữ liệu, cung cấp giao diện và điều phối tài nguyên, điều mà các thiết bị chuyên dụng không cần.' },
+                { id: 'q10', question: 'Khi bạn cắm một chiếc USB vào máy tính chạy hệ điều hành Windows 10 và máy tính ngay lập tức hiển thị một ổ đĩa mới mà không cần bạn phải cài đặt thủ công, tính năng nào của hệ điều hành đã hoạt động?', options: ['Giao diện dòng lệnh', 'Đa người dùng', 'Plug & Play', 'Mã nguồn mở'], answer: 'Plug & Play', explanation: 'Đây là ví dụ điển hình của cơ chế "Plug & Play" (cắm và chạy), nơi hệ điều hành tự động nhận diện và cấu hình phần cứng mới mà không cần sự can thiệp của người dùng.' },
+                { id: 'q11', question: 'Một chiếc Tivi thông minh (Smart TV) cho phép người dùng cài đặt thêm các ứng dụng như YouTube, Netflix, trình duyệt web từ một kho ứng dụng. Điều này cho thấy chiếc Tivi đó có đặc điểm gì?', options: ['Nó không có phần cứng xử lí.', 'Nó chắc chắn được sản xuất bởi Apple.', 'Nó được điều khiển bởi một hệ điều hành, tương tự như máy tính hoặc điện thoại thông minh.', 'Nó chỉ có thể thực hiện một chức năng duy nhất.'], answer: 'Nó được điều khiển bởi một hệ điều hành, tương tự như máy tính hoặc điện thoại thông minh.', explanation: 'Việc có thể cài đặt và chạy nhiều ứng dụng khác nhau cho thấy đây là một thiết bị đa năng. Theo tài liệu, các thiết bị đa năng cần có hệ điều hành để quản lí các ứng dụng và tài nguyên.' },
+                { id: 'q12', question: 'Một người dùng muốn xoá tệp "tailieu.txt". Thay vì gõ lệnh "erase C:\\tailieu.txt" vào một màn hình đen, họ dùng chuột kéo biểu tượng của tệp vào biểu tượng Thùng rác. Hành động này thể hiện ưu điểm của loại giao diện nào?', options: ['Giao diện dòng lệnh (CLI)', 'Giao diện đồ hoạ (GUI)', 'Giao diện kết nối mạng', 'Giao diện phần cứng'], answer: 'Giao diện đồ hoạ (GUI)', explanation: 'Hành động sử dụng chuột, biểu tượng và thao tác kéo-thả là đặc trưng của giao diện đồ hoạ, vốn trực quan và dễ sử dụng hơn so với việc phải gõ lệnh chính xác trong giao diện dòng lệnh.' }
+            ],
+            part2: [
+                { id: 'q13', question: 'Một học sinh vừa nhận được chiếc máy tính xách tay mới cài sẵn hệ điều hành Windows 11. Bạn ấy kết nối con chuột không dây qua cổng USB và máy tính nhận ngay lập tức. Sau đó, bạn ấy mở đồng thời trình duyệt web để tra cứu tài liệu và phần mềm soạn thảo văn bản để làm bài tập, các cửa sổ chương trình hiển thị trực quan trên màn hình.', sub_questions: [
+                    { id: 'a', text: 'Hệ điều hành Windows 11 mà học sinh đang sử dụng có giao diện đồ hoạ.', answer: 'true', explanation: 'Việc có các cửa sổ chương trình hiển thị trực quan là đặc điểm của giao diện đồ hoạ, và Windows là hệ điều hành đồ hoạ tiêu biểu.' },
+                    { id: 'b', text: 'Cơ chế giúp máy tính tự động nhận biết con chuột không dây được gọi là "đa nhiệm".', answer: 'false', explanation: 'Cơ chế tự động nhận biết thiết bị ngoại vi được gọi là "plug & play". Đa nhiệm là khả năng chạy nhiều chương trình đồng thời.' },
+                    { id: 'c', text: 'Việc mở đồng thời trình duyệt web và phần mềm soạn thảo văn bản cho thấy hệ điều hành có khả năng đa nhiệm, giúp nâng cao hiệu quả làm việc.', answer: 'true', explanation: 'Đây chính là ví dụ về khả năng đa nhiệm (chạy nhiều chương trình đồng thời) của hệ điều hành, giúp nâng cao hiệu quả sử dụng máy tính.' },
+                    { id: 'd', text: 'Nếu muốn trải nghiệm một hệ điều hành mã nguồn mở miễn phí trên chiếc máy tính này, học sinh có thể cài đặt Ubuntu.', answer: 'true', explanation: 'Ubuntu là một biến thể phổ biến của LINUX, một hệ điều hành mã nguồn mở mạnh mẽ và miễn phí cho máy tính cá nhân.' }
+                ]},
+                { id: 'q14', question: 'Một lập trình viên đang viết một phần mềm ứng dụng nghe nhạc. Để phần mềm có thể đọc được file nhạc từ ổ đĩa cứng, lập trình viên không cần viết mã để điều khiển trực tiếp phần cứng ổ đĩa. Thay vào đó, họ chỉ cần gọi một dịch vụ "mở tệp" do hệ điều hành cung cấp, giúp cho việc lập trình trở nên đơn giản và hiệu quả hơn rất nhiều.', sub_questions: [
+                    { id: 'a', text: 'Trong trường hợp này, hệ điều hành đóng vai trò là môi trường trung gian giữa phần mềm nghe nhạc và phần cứng máy tính.', answer: 'true', explanation: 'Mô hình này cho thấy hệ điều hành là môi trường trung gian, giúp phần mềm ứng dụng khai thác phần cứng.' },
+                    { id: 'b', text: 'Việc quản lí tệp và thư mục là một trong năm nhóm chức năng chính của hệ điều hành.', answer: 'true', explanation: 'Tài liệu đã liệt kê "Quản lí việc lưu trữ dữ liệu (quản lí tệp và thư mục)" là một trong các nhóm chức năng chính của hệ điều hành.' },
+                    { id: 'c', text: 'Mô hình làm việc này cho thấy phần mềm ứng dụng phụ thuộc vào các dịch vụ của hệ điều hành, giúp đảm bảo tính nhất quán và giảm độ phức tạp cho người lập trình.', answer: 'true', explanation: 'Việc ứng dụng chỉ gọi các dịch vụ do hệ điều hành cung cấp cho thấy sự phụ thuộc này, và đây là lý do chính cần có hệ điều hành cho các thiết bị đa năng để đơn giản hoá việc phát triển phần mềm.' },
+                    { id: 'd', text: 'Phần mềm nghe nhạc này có thể chạy trên một thiết bị không có hệ điều hành, ví dụ như hệ thống điều khiển lò vi sóng.', answer: 'false', explanation: 'Phần mềm ứng dụng phức tạp như trình nghe nhạc cần hệ điều hành để quản lí tệp và tài nguyên. Các thiết bị chuyên dụng như lò vi sóng thường không có hệ điều hành và chỉ chạy một chương trình duy nhất cài sẵn.' }
+                ]},
+                { id: 'q15', question: 'Một người dùng sở hữu điện thoại iPhone chạy hệ điều hành iOS. Họ thường xuyên sử dụng kết nối 4G để truy cập mạng xã hội khi đang di chuyển và dùng cảm biến vân tay để mở khoá. Giao diện của điện thoại cho phép họ tương tác bằng cách chạm và vuốt trên màn hình cảm ứng một cách mượt mà và trực quan.', sub_questions: [
+                    { id: 'a', text: 'iOS là hệ điều hành do Google phát triển.', answer: 'false', explanation: 'Tài liệu nêu rõ iOS là hệ điều hành của Apple dùng cho iPhone, iPad. Android là của Google.' },
+                    { id: 'b', text: 'Hệ điều hành di động như iOS được thiết kế để ưu tiên kết nối mạng di động như 4G.', answer: 'true', explanation: 'Do tính di động, hệ điều hành cho thiết bị di động chú trọng đến khả năng kết nối mạng không dây như Internet di động (3G, 4G, 5G,...).' },
+                    { id: 'c', text: 'Giao diện thân thiện của iOS có được là nhờ việc tận dụng các cảm biến (vân tay, cảm ứng) để nhận dạng hành vi người dùng, giúp các thao tác tự nhiên hơn.', answer: 'true', explanation: 'Hệ điều hành di động có giao diện đặc biệt thân thiện nhờ nhận dạng hành vi của người dùng thông qua các cảm biến, tạo ra các giao tiếp độc đáo.' },
+                    { id: 'd', text: 'Vì iOS là một hệ điều hành, người dùng có thể dễ dàng gỡ bỏ nó và cài đặt hệ điều hành Windows 11 lên chiếc iPhone của mình.', answer: 'false', explanation: 'Hệ điều hành thường được thiết kế riêng cho phần cứng. iOS được thiết kế cho các thiết bị của Apple và không thể thay thế bằng Windows, vốn được thiết kế cho dòng máy PC.' }
+                ]}
+                ,
+                { id: 'q16', question: 'Một nhà quản trị mạng tại một công ty lớn quyết định sử dụng hệ điều hành LINUX cho các máy chủ vì tính ổn định và an toàn cao. Trong khi đó, các nhân viên văn phòng lại sử dụng máy tính cá nhân chạy Windows vì sự phổ biến và giao diện thân thiện. Điều này cho thấy sự đa dạng và vai trò khác nhau của các hệ điều hành trong thực tế.', sub_questions: [
+                    { id: 'a', text: 'Hệ điều hành LINUX có nguồn gốc từ hệ điều hành UNIX và có thể được dùng cho cả máy chủ và máy tính cá nhân.', answer: 'true', explanation: 'Tài liệu cho biết LINUX có nguồn gốc từ UNIX và không chỉ dùng cho máy tính cá nhân mà còn dùng cho cả máy chủ.' },
+                    { id: 'b', text: 'Hệ điều hành Windows gần như thống trị thị trường hệ điều hành máy tính cá nhân.', answer: 'true', explanation: 'Bài học trích dẫn một thống kê năm 2018 cho thấy hơn 86% người dùng máy tính sử dụng Windows, cho thấy sự thống trị của nó trên thị trường máy tính cá nhân.' },
+                    { id: 'c', text: 'Việc lựa chọn LINUX cho máy chủ cho thấy hệ điều hành này được đánh giá cao về tính hiệu quả, ổn định và an toàn, những yếu tố quan trọng cho máy chủ.', answer: 'true', explanation: 'UNIX, tiền thân của LINUX, đã chứng tỏ được tính hiệu quả, ổn định và an toàn cao. LINUX kế thừa các đặc điểm này và được cộng đồng đánh giá cao, phù hợp cho vai trò máy chủ.' },
+                    { id: 'd', text: 'Vì LINUX là mã nguồn mở, nó chỉ được phát triển bởi một người duy nhất là Linus Torvalds và không có các biến thể khác.', answer: 'false', explanation: 'Mặc dù Linus Torvalds khởi tạo LINUX, nhưng vì là mã nguồn mở, nó được "bất cứ ai cũng có thể sử dụng và phát triển thêm". Đã có nhiều biến thể khác nhau ra đời từ LINUX như RedHat, Suse, Ubuntu.' }
+                ]}
+            ]
+        };
+        // --- KHỐI DỮ LIỆU CÂU HỎI KẾT THÚC ---
+
+
+        // --- KHỐI MÃ NGUỒN CHỨC NĂNG (Được giữ nguyên) ---
+        let studentName = '', studentSchool = '', studentClass = '';
+        const timeLimit = 15 * 60;
+        let timeLeft = timeLimit;
+        let timerInterval;
+        let shuffledPart1Data, shuffledPart2Data;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function buildQuiz() {
+            const part1Container = document.getElementById('part1-questions');
+            const part2Container = document.getElementById('part2-questions');
+
+            let part1Html = '';
+            shuffledPart1Data = shuffle([...quizData.part1]);
+            shuffledPart1Data.forEach((q, index) => {
+                const shuffledOptions = shuffle([...q.options]);
+                const optionsHtml = shuffledOptions.map(opt => {
+                    const escapedOpt = opt.replace(/"/g, '\"');
+                    return `
+                        <label class="option-label">
+                            <input type="radio" name="${q.id}" value="${escapedOpt}"> ${opt}
+                        </label>
+                    `;
+                }).join('');
+
+                part1Html += `
+                    <div class="question" id="${q.id}">
+                        <p><strong>Câu ${index + 1}:</strong> ${q.question}</p>
+                        <div class="options-container">${optionsHtml}</div>
+                    </div>
+                `;
+            });
+            part1Container.innerHTML = part1Html;
+
+            let part2Html = '';
+            shuffledPart2Data = shuffle([...quizData.part2]);
+            shuffledPart2Data.forEach((q, index) => {
+                const subQuestionsHtml = q.sub_questions.map(sub => `
+                    <div class="true-false-container">
+                        <p class="sub-question-text">${sub.id}) ${sub.text}</p>
+                        <label class="option-label"><input type="radio" name="${q.id}_${sub.id}" value="true"> Đúng</label>
+                        <label class="option-label"><input type="radio" name="${q.id}_${sub.id}" value="false"> Sai</label>
+                    </div>
+                `).join('');
+
+                part2Html += `
+                    <div class="question" id="${q.id}">
+                        <p><strong>Câu ${shuffledPart1Data.length + index + 1}:</strong> ${q.question}</p>
+                        ${subQuestionsHtml}
+                    </div>
+                `;
+            });
+            part2Container.innerHTML = part2Html;
+        }
+
+        function startTimer() {
+            const countdownElement = document.getElementById('countdown');
+            if (!countdownElement) return;
+
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // Tự động nộp bài khi hết giờ
+                    if (document.getElementById('quizForm')) {
+                        submitQuiz(new Event('submit'));
+                    }
+                    return;
+                }
+                timeLeft--; // Giảm thời gian trước để hiển thị đúng
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function getQuestionScore(correctCount) {
+            switch (correctCount) {
+                case 1: return 0.1;
+                case 2: return 0.25;
+                case 3: return 0.5;
+                case 4: return 1.0;
+                default: return 0.0;
+            }
+        }
+
+        function submitQuiz(event) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            stopTimer();
+            let score = 0;
+            const resultSection = document.getElementById('results');
+            const resultDetails = document.getElementById('resultDetails');
+            const scoreElement = document.getElementById('score');
+
+            const studentInfoResults = document.getElementById('studentInfoResults');
+            studentInfoResults.innerHTML = `
+                <p><b>Họ và tên thí sinh:</b> ${studentName}</p>
+                <p><b>Trường:</b> ${studentSchool}</p>
+                <p><b>Lớp:</b> ${studentClass}</p>
+            `;
+
+            resultDetails.innerHTML = '';
+            resultSection.style.display = 'block';
+            document.querySelector('.submit-btn').style.display = 'none';
+
+            // Chấm điểm Phần I
+            shuffledPart1Data.forEach((q, index) => {
+                const questionDiv = document.getElementById(q.id);
+                const questionHeaderHTML = `Câu ${index + 1}: ${q.question}`;
+                const selectedOption = document.querySelector(`input[name="${q.id}"]:checked`);
+                const userAnswer = selectedOption ? selectedOption.value : null;
+                const isCorrect = userAnswer === q.answer;
+
+                if (isCorrect) {
+                    score += 0.5;
+                }
+
+                const allLabels = questionDiv.querySelectorAll('.option-label');
+                allLabels.forEach(label => {
+                    const input = label.querySelector('input[type="radio"]');
+                    if (input.value === q.answer) {
+                        label.classList.add('correct');
+                    }
+                    if (userAnswer && input.value === userAnswer && !isCorrect) {
+                        label.classList.add('incorrect');
+                    }
+                });
+
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item', isCorrect ? 'correct' : 'incorrect');
+                resultItem.innerHTML = `
+                    <p><strong>${questionHeaderHTML}</strong></p>
+                    <p>Đáp án của bạn: <span class="${isCorrect ? 'correct-answer-text' : 'your-answer-text'}">${userAnswer || 'Chưa chọn'}</span></p>
+                    <p>Đáp án đúng: <span class="correct-answer-text">${q.answer}</span></p>
+                    <div class="explanation"><p>Giải thích: ${q.explanation}</p></div>
+                `;
+                resultDetails.appendChild(resultItem);
+            });
+
+            // Chấm điểm Phần II
+            shuffledPart2Data.forEach((q, index) => {
+                const questionDiv = document.getElementById(q.id);
+                const questionHeaderHTML = `Câu ${shuffledPart1Data.length + index + 1}: ${q.question}`;
+                let correctCount = 0;
+                let subResultHtml = '';
+
+                q.sub_questions.forEach(sub => {
+                    const selectedOption = document.querySelector(`input[name="${q.id}_${sub.id}"]:checked`);
+                    const userAnswer = selectedOption ? selectedOption.value : null;
+                    const isCorrect = userAnswer === sub.answer;
+
+                    if(isCorrect) {
+                        correctCount++;
+                    }
+
+                    const subQuestionInputs = questionDiv.querySelectorAll(`input[name="${q.id}_${sub.id}"]`);
+                    subQuestionInputs.forEach(input => {
+                        const label = input.closest('.option-label');
+                        if (input.value === sub.answer) {
+                            label.classList.add('correct');
+                        }
+                        if (userAnswer && input.value === userAnswer && !isCorrect) {
+                            label.classList.add('incorrect');
+                        }
+                    });
+
+                    subResultHtml += `
+                        <p style="margin-left: 20px;">${sub.id}) ${sub.text}</p>
+                        <p style="margin-left: 40px;">Đáp án của bạn: <span class="${isCorrect ? 'correct-answer-text' : 'your-answer-text'}">${userAnswer === 'true' ? 'Đúng' : userAnswer === 'false' ? 'Sai' : 'Chưa chọn'}</span></p>
+                        <p style="margin-left: 40px;">Đáp án đúng: <span class="correct-answer-text">${sub.answer === 'true' ? 'Đúng' : 'Sai'}</span></p>
+                        <div class="explanation" style="margin-left: 20px;"><p>Giải thích: ${sub.explanation}</p></div>
+                    `;
+                });
+
+                const questionScore = getQuestionScore(correctCount);
+                score += questionScore;
+
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item', correctCount === 4 ? 'correct' : 'incorrect');
+                resultItem.innerHTML = `
+                    <p><strong>${questionHeaderHTML}</strong></p>
+                    ${subResultHtml}
+                    <div class="mt-4"><p>Số đáp án đúng: ${correctCount}/4</p><p>Điểm của câu này là: ${questionScore.toFixed(2)}/1.00</p></div>
+                `;
+                resultDetails.appendChild(resultItem);
+            });
+
+            scoreElement.innerHTML = `<h2>Tổng điểm toàn bài là: ${score.toFixed(2)}/10</h2>`;
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('quizForm').querySelectorAll('input').forEach(input => input.disabled = true);
+        }
+
+        // --- SỰ KIỆN CHÍNH ĐỂ CHẠY ỨNG DỤNG ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const startBtn = document.getElementById('startBtn');
+            const userInfoContainer = document.getElementById('userInfoFormContainer');
+            const quizContainer = document.getElementById('quizContainer');
+            const quizForm = document.getElementById('quizForm');
+
+            buildQuiz();
+
+            if (startBtn) {
+                startBtn.addEventListener('click', () => {
+                    studentName = document.getElementById('studentName').value;
+                    studentSchool = document.getElementById('studentSchool').value;
+                    studentClass = document.getElementById('studentClass').value;
+
+                    if (!studentName || !studentSchool || !studentClass) {
+                        alert('Vui lòng điền đầy đủ thông tin!');
+                        return;
+                    }
+
+                    if (userInfoContainer && quizContainer) {
+                        userInfoContainer.style.display = 'none';
+                        quizContainer.style.display = 'block';
+                        startTimer();
+                    }
+                });
+            }
+
+            if (quizForm) {
+                quizForm.addEventListener('submit', submitQuiz);
+            }
+        });
+        // --- KHỐI MÃ NGUỒN CHỨC NĂNG KẾT THÚC ---</script>
+</body>
+</html>
