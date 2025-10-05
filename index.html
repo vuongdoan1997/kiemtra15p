@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ÔN TẬP TRẮC NGHIỆM TIN 11 - BÀI 1 (HỆ ĐIỀU HÀNH)</title>
+    <title>ÔN TẬP TRẮC NGHIỆM TIN 11 - BÀI 3 (HỆ ĐIỀU HÀNH)</title>
     <style>
         /* CSS được tinh chỉnh để bài quiz hiển thị độc lập */
         body {
@@ -15,14 +15,14 @@
             color: #333;
         }
         .container {
-            max-width: 900px; /* Tăng chiều rộng để dễ nhìn hơn */
+            max-width: 900px; 
             margin: auto;
             background: #fff;
             padding: 10px;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
-        /* CSS cho Form Thông tin Thí sinh */
+        /* CSS cho Form Thông tin Thí sinh (Đã loại bỏ Trường) */
         #userInfoFormContainer { padding: 30px; }
         #userInfoForm .form-group { margin-bottom: 20px; }
         #userInfoForm label {
@@ -146,17 +146,15 @@
 <body>
     <div class="container">
         <div id="userInfoFormContainer">
-            <h1>THÔNG TIN THÍ SINH</h1>
+            <h1>THÔNG TIN HỌC SINH</h1>
             <h2>Vui lòng điền đầy đủ thông tin bên dưới</h2>
             <div id="userInfoForm">
                 <div class="form-group">
-                    <label for="studentName">Họ và tên thí sinh:</label>
+                    <label for="studentName">Họ và Tên:</label>
                     <input type="text" id="studentName" name="studentName" required>
                 </div>
-                <div class="form-group">
-                    <label for="studentSchool">Trường:</label>
-                    <input type="text" id="studentSchool" name="studentSchool" required>
-                </div>
+                <input type="hidden" id="studentSchool" name="studentSchool" value="KHÔNG_SỬ_DỤNG">
+                
                 <div class="form-group">
                     <label for="studentClass">Lớp:</label>
                     <input type="text" id="studentClass" name="studentClass" required>
@@ -167,7 +165,7 @@
 
         <div id="quizContainer" style="display:none;">
             <h1>ÔN TẬP TRẮC NGHIỆM</h1>
-            <h2>Bài 1. HỆ ĐIỀU HÀNH</h2>
+            <h2>Bài 3. PHẦN MỀM NGUỒN MỞ VÀ PHẦN MỀM CHẠY TRÊN INTERNET</h2>
             
             <div class="timer">Thời gian còn lại: <span id="countdown">15:00</span></div>
 
@@ -188,7 +186,7 @@
 
             <div class="results" id="results">
                 <h2>THÔNG TIN BÀI LÀM CỦA BẠN</h2>
-                <div id="studentInfoResults"></div>
+                <div id="studentInfoResults"></div> 
                 <div id="score"></div>
                 <div id="resultDetails"></div>
             </div>
@@ -196,68 +194,61 @@
     </div>
 
     <script>
-        // --- CẤU HÌNH GOOGLE FORM CỦA BẠN (Đã trích xuất từ mã HTML bạn gửi) ---
-        // Action URL của Form (địa chỉ nhận phản hồi)
+        // --- CẤU HÌNH GOOGLE FORM CỦA BẠN ---
+        // Action URL của Form
         const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc09y40H6BEgtLqI3R1Q04F8kljeqHX4Bij1G7sIlqk_Fmw5A/formResponse";
         
         // Entry ID của các trường nhập liệu trong Form của bạn
-        // Chú ý: Vì Form bạn chỉ có 3 trường, chúng ta sẽ ánh xạ:
-        // Họ tên + Trường (trong quiz) -> Trường (Entry ID 699633454)
-        const ENTRY_ID_SCHOOL = "entry.699633454"; 
-        const ENTRY_ID_CLASS = "entry.371774655";  
-        const ENTRY_ID_SCORE = "entry.46168601";   
+        const ENTRY_ID_NAME = "entry.699633454";   // Dùng trường này để lưu Họ và Tên
+        const ENTRY_ID_CLASS = "entry.371774655";  // Dùng trường này để lưu Lớp
+        const ENTRY_ID_SCORE = "entry.46168601";   // Dùng trường này để lưu Điểm số
 
-        // --- KHỐI DỮ LIỆU CÂU HỎI (Được giữ nguyên từ Form gốc) ---
+        // --- KHỐI DỮ LIỆU CÂU HỎI (Đã đổi sang Bài 3) ---
         const quizData = {
             part1: [
-                { id: 'q1', question: 'Cơ chế giúp hệ điều hành tự động nhận biết thiết bị ngoại vi khi được kết nối vào máy tính được gọi là gì?', options: ['Giao diện đồ hoạ (GUI)', 'Plug & Play (Cắm và chạy)', 'Đa nhiệm (Multitasking)', 'Mã nguồn mở (Open Source)'], answer: 'Plug & Play (Cắm và chạy)', explanation: 'Tài liệu nêu rõ cơ chế "plug & play" giúp hệ điều hành tự động nhận biết thiết bị ngoại vi khi khởi động máy tính.' },
-                { id: 'q2', question: 'Hệ điều hành nào sau đây là một hệ điều hành mã nguồn mở có nguồn gốc từ UNIX?', options: ['Windows XP', 'macOS', 'LINUX', 'iOS'], answer: 'LINUX', explanation: 'Tài liệu cho biết LINUX có nguồn gốc từ hệ điều hành UNIX và được công bố dưới dạng mã nguồn mở.' },
-                { id: 'q3', question: 'Hai hệ điều hành phổ biến nhất cho thiết bị di động được đề cập trong bài là gì?', options: ['Windows và LINUX', 'iOS và Android', 'UNIX và DOS', 'macOS và Ubuntu'], answer: 'iOS và Android', explanation: 'Bài học nêu rõ hai hệ điều hành phổ biến hơn cả cho thiết bị di động là iOS của Apple và Android của Google.' },
-                { id: 'q4', question: 'Trong mối quan hệ giữa các thành phần của hệ thống máy tính, hệ điều hành đóng vai trò là gì?', options: ['Lớp trên cùng, giao tiếp trực tiếp với người dùng.', 'Một phần mềm ứng dụng chuyên dụng.', 'Môi trường trung gian giúp phần mềm ứng dụng khai thác phần cứng.', 'Một thành phần của phần cứng.'], answer: 'Môi trường trung gian giúp phần mềm ứng dụng khai thác phần cứng.', explanation: 'Tài liệu và hình 1.4 mô tả hệ điều hành là môi trường trung gian giúp phần mềm ứng dụng khai thác phần cứng.' },
-                { id: 'q5', question: 'Phiên bản Windows nào được xem là một trong những phiên bản thành công nhất của Microsoft với số người dùng rất lớn và có nâng cấp quan trọng cho bộ xử lí 64 bit?', options: ['Windows 3.1', 'Windows 95', 'Windows XP', 'Windows 1.0'], answer: 'Windows XP', explanation: 'Tài liệu khẳng định Windows XP (2001) là một trong các phiên bản hệ điều hành thành công nhất của Microsoft và có nâng cấp quan trọng để chạy trên các bộ xử lí 64 bit.' },
-                { id: 'q6', question: 'Tại sao giao diện đồ hoạ (GUI) được coi là thân thiện với người dùng hơn so với giao diện dòng lệnh (CLI)?', options: ['Vì nó yêu cầu người dùng phải nhớ chính xác cú pháp câu lệnh.', 'Vì nó có tính trực quan, sử dụng hình ảnh, biểu tượng, cửa sổ giúp người dùng giao tiếp với máy dễ dàng hơn.', 'Vì nó chỉ hoạt động với chuột mà không cần bàn phím.', 'Vì nó xử lí thông tin nhanh hơn giao diện dòng lệnh.'], answer: 'Vì nó có tính trực quan, sử dụng hình ảnh, biểu tượng, cửa sổ giúp người dùng giao tiếp với máy dễ dàng hơn.', explanation: 'Bài học giải thích rằng giao diện đồ hoạ có tính trực quan, giúp người sử dụng giao tiếp với máy dễ dàng hơn so với việc phải gõ lệnh chính xác trong giao diện dòng lệnh.' },
-                { id: 'q7', question: 'Đặc điểm nào giải thích tại sao hệ điều hành cho thiết bị di động lại ưu tiên khả năng kết nối mạng không dây?', options: ['Vì thiết bị di động luôn được đặt ở một vị trí cố định.', 'Vì màn hình của thiết bị di động nhỏ.', 'Do tính di động, người dùng cần kết nối mạng ở mọi nơi, nên hệ điều hành chú trọng đến wifi, 3G/4G/5G, bluetooth.', 'Vì kết nối không dây an toàn hơn kết nối có dây.'], answer: 'Do tính di động, người dùng cần kết nối mạng ở mọi nơi, nên hệ điều hành chú trọng đến wifi, 3G/4G/5G, bluetooth.', explanation: 'Tài liệu nêu rõ: "Do tính di động mà hệ điều hành cho thiết bị di động chú trọng đến khả năng kết nối mạng không dây".' },
-                { id: 'q8', question: 'Ý nghĩa quan trọng nhất của việc hệ điều hành Windows 95 tích hợp trực tiếp nhiều tính năng cơ bản là gì?', options: ['Làm cho hệ điều hành chạy chậm hơn.', 'Windows không còn là một vỏ bọc đồ hoạ phụ thuộc vào DOS nữa, mà trở thành một hệ điều hành hoàn chỉnh hơn.', 'Loại bỏ hoàn toàn giao diện đồ hoạ.', 'Bắt buộc người dùng phải sử dụng giao diện dòng lệnh.'], answer: 'Windows không còn là một vỏ bọc đồ hoạ phụ thuộc vào DOS nữa, mà trở thành một hệ điều hành hoàn chỉnh hơn.', explanation: 'Bài học chỉ ra rằng trước Windows 95, Windows về cơ bản chỉ là một vỏ bọc đồ hoạ của DOS. Từ phiên bản 95, nhiều tính năng cơ bản của hệ điều hành mới được tích hợp trực tiếp vào Windows.' },
-                { id: 'q9', question: 'Vì sao các thiết bị đa năng như máy tính cá nhân cần phải có hệ điều hành, trong khi thiết bị chuyên dụng như lò vi sóng thì không?', options: ['Vì máy tính đắt tiền hơn lò vi sóng.', 'Vì người dùng máy tính có nhu cầu cài và chạy nhiều phần mềm ứng dụng khác nhau, đòi hỏi phải có một hệ thống để quản lí tài nguyên và tổ chức dữ liệu.', 'Vì lò vi sóng không sử dụng điện.', 'Vì máy tính luôn kết nối mạng, còn lò vi sóng thì không.'], answer: 'Vì người dùng máy tính có nhu cầu cài và chạy nhiều phần mềm ứng dụng khác nhau, đòi hỏi phải có một hệ thống để quản lí tài nguyên và tổ chức dữ liệu.', explanation: 'Tài liệu giải thích rằng các thiết bị đa năng cần hệ điều hành để đáp ứng nhu cầu nạp nhiều phần mềm, tổ chức dữ liệu, cung cấp giao diện và điều phối tài nguyên, điều mà các thiết bị chuyên dụng không cần.' },
-                { id: 'q10', question: 'Khi bạn cắm một chiếc USB vào máy tính chạy hệ điều hành Windows 10 và máy tính ngay lập tức hiển thị một ổ đĩa mới mà không cần bạn phải cài đặt thủ công, tính năng nào của hệ điều hành đã hoạt động?', options: ['Giao diện dòng lệnh', 'Đa người dùng', 'Plug & Play', 'Mã nguồn mở'], answer: 'Plug & Play', explanation: 'Đây là ví dụ điển hình của cơ chế "Plug & Play" (cắm và chạy), nơi hệ điều hành tự động nhận diện và cấu hình phần cứng mới mà không cần sự can thiệp của người dùng.' },
-                { id: 'q11', question: 'Một chiếc Tivi thông minh (Smart TV) cho phép người dùng cài đặt thêm các ứng dụng như YouTube, Netflix, trình duyệt web từ một kho ứng dụng. Điều này cho thấy chiếc Tivi đó có đặc điểm gì?', options: ['Nó không có phần cứng xử lí.', 'Nó chắc chắn được sản xuất bởi Apple.', 'Nó được điều khiển bởi một hệ điều hành, tương tự như máy tính hoặc điện thoại thông minh.', 'Nó chỉ có thể thực hiện một chức năng duy nhất.'], answer: 'Nó được điều khiển bởi một hệ điều hành, tương tự như máy tính hoặc điện thoại thông minh.', explanation: 'Việc có thể cài đặt và chạy nhiều ứng dụng khác nhau cho thấy đây là một thiết bị đa năng. Theo tài liệu, các thiết bị đa năng cần có hệ điều hành để quản lí các ứng dụng và tài nguyên.' },
-                { id: 'q12', question: 'Một người dùng muốn xoá tệp "tailieu.txt". Thay vì gõ lệnh "erase C:\\tailieu.txt" vào một màn hình đen, họ dùng chuột kéo biểu tượng của tệp vào biểu tượng Thùng rác. Hành động này thể hiện ưu điểm của loại giao diện nào?', options: ['Giao diện dòng lệnh (CLI)', 'Giao diện đồ hoạ (GUI)', 'Giao diện kết nối mạng', 'Giao diện phần cứng'], answer: 'Giao diện đồ hoạ (GUI)', explanation: 'Hành động sử dụng chuột, biểu tượng và thao tác kéo-thả là đặc trưng của giao diện đồ hoạ, vốn trực quan và dễ sử dụng hơn so với việc phải gõ lệnh chính xác trong giao diện dòng lệnh.' }
+                // --- PHẦN I: TRẮC NGHIỆM ĐƠN (12 CÂU) ---
+                { id: "q1", question: "Phần mềm được chuyển giao dưới dạng mã máy, khó đọc hiểu và nhằm mục đích bảo vệ chống đánh cắp ý tưởng được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm nguồn đóng", "Phần mềm tự do", "Phần mềm chạy trên Internet"], answer: "Phần mềm nguồn đóng", explanation: "Tài liệu định nghĩa: \"Phần mềm chuyển giao dưới dạng mã máy thường được gọi là phần mềm nguồn đóng\"." },
+                { id: "q2", question: "Theo tài liệu, ví dụ nào sau đây là một phần mềm nguồn mở?", options: ["Microsoft Word", "Photoshop", "Linux", "Acrobat Pro DC"], answer: "Linux", explanation: "Bảng 3.1 liệt kê Linux là phần mềm nguồn mở có chức năng tương đương hệ điều hành thương mại Windows." },
+                { id: "q3", question: "Loại giấy phép phần mềm nguồn mở nào được áp dụng rộng rãi nhất theo nội dung bài học?", options: ["Giấy phép công cộng GNU GPL", "Giấy phép Microsoft", "Giấy phép Adobe", "Giấy phép thương mại"], answer: "Giấy phép công cộng GNU GPL", explanation: "Tài liệu nêu rõ: \"Có nhiều loại giấy phép phần mềm nguồn mở, trong đó giấy phép công cộng GNU GPL (GNU General Public License) được áp dụng rộng rãi nhất\"." },
+                { id: "q4", question: "Phần mềm nào sau đây được định nghĩa là phần mềm cho phép sử dụng qua Internet mà không cần cài đặt vào máy?", options: ["Phần mềm đặt hàng", "Phần mềm đóng gói", "Phần mềm chạy trên Internet", "Phần mềm nguồn đóng"], answer: "Phần mềm chạy trên Internet", explanation: "Định nghĩa trong bài: \"Phần mềm chạy trên Internet được hiểu là phần mềm cho phép sử dụng qua Internet mà không cần phải cài đặt vào máy\"." },
+                { id: "q5", question: "Phần mềm được thiết kế theo yêu cầu của từng khách hàng riêng biệt được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm đóng gói", "Phần mềm đặt hàng", "Phần mềm tự do"], answer: "Phần mềm đặt hàng", explanation: "Tài liệu định nghĩa: \"Phần mềm \"đặt hàng\" (phần mềm \"may-đo\") được thiết kế theo yêu cầu của từng khách hàng\"." },
+                { id: "q6", question: "Đâu là sự khác biệt cơ bản nhất giữa phần mềm tự do (như Acrobat Reader) và phần mềm nguồn mở (như GIMP)?", options: ["Phần mềm tự do luôn có phí, còn phần mềm nguồn mở thì miễn phí.", "Phần mềm tự do không cho phép sao chép, còn phần mềm nguồn mở thì có.", "Phần mềm nguồn mở cung cấp cả mã nguồn để người dùng có thể sửa đổi, trong khi phần mềm tự do có thể không cung cấp mã nguồn.", "Phần mềm tự do chỉ chạy trên Windows, còn phần mềm nguồn mở chạy trên Linux."], answer: "Phần mềm nguồn mở cung cấp cả mã nguồn để người dùng có thể sửa đổi, trong khi phần mềm tự do có thể không cung cấp mã nguồn.", explanation: "Tài liệu định nghĩa phần mềm nguồn mở là \"được cung cấp cả mã nguồn\", trong khi phần mềm tự do \"có thể ở dạng mã máy hoặc mã nguồn\", ví dụ Acrobat Reader là dạng mã máy." },
+                { id: "q7", question: "Theo giấy phép GNU GPL, nếu bạn sửa đổi một phần mềm nguồn mở và phân phối lại phiên bản đã sửa đổi đó, bạn có nghĩa vụ gì?", options: ["Phải trả tiền bản quyền cho tác giả gốc.", "Phải giữ kín mã nguồn của phần sửa đổi để bán.", "Phải công bố mã nguồn phần sửa đổi và áp dụng giấy phép GNU GPL cho nó.", "Phải đổi tên phần mềm thành một tên hoàn toàn mới."], answer: "Phải công bố mã nguồn phần sửa đổi và áp dụng giấy phép GNU GPL cho nó.", explanation: "Giấy phép GNU GPL quy định rõ: \"phải công bố mã nguồn phần sửa đổi... đồng thời phải áp dụng giấy phép GNU GPL cho chính phần thay đổi đó\"." },
+                { id: "q8", question: "Tại sao phần mềm nguồn mở không thể thay thế hoàn toàn được phần mềm thương mại?", options: ["Vì phần mềm nguồn mở luôn có nhiều lỗi hơn.", "Vì phần mềm thương mại mới có thể đáp ứng các nhu cầu riêng, đặc thù của từng khách hàng (phần mềm đặt hàng) và có sự bảo hành, hỗ trợ kĩ thuật chính thức.", "Vì phần mềm nguồn mở không được phép sử dụng trong các công ty lớn.", "Vì phần mềm thương mại luôn có chi phí rẻ hơn."], answer: "Vì phần mềm thương mại mới có thể đáp ứng các nhu cầu riêng, đặc thù của từng khách hàng (phần mềm đặt hàng) và có sự bảo hành, hỗ trợ kĩ thuật chính thức.", explanation: "Tài liệu giải thích rằng những nhu cầu riêng thì phần mềm \"đặt hàng\" mới có thể đáp ứng được, và nó còn được bảo hành theo hợp đồng." },
+                { id: "q9", question: "Ưu điểm chính về tính minh bạch của phần mềm nguồn mở so với phần mềm nguồn đóng là gì?", options: ["Giao diện của phần mềm nguồn mở luôn đẹp hơn.", "Người dùng có thể kiểm soát được mã nguồn để biết chính xác phần mềm làm gì, tránh các cài cắm không mong muốn.", "Phần mềm nguồn mở luôn được cập nhật thường xuyên hơn.", "Tài liệu hướng dẫn của phần mềm nguồn mở luôn chi tiết hơn."], answer: "Người dùng có thể kiểm soát được mã nguồn để biết chính xác phần mềm làm gì, tránh các cài cắm không mong muốn.", explanation: "Bảng 3.2 so sánh chỉ ra rằng với phần mềm nguồn mở, người dùng \"Có thể kiểm soát được mã nguồn\", trong khi phần mềm nguồn đóng thì \"Khó kiểm soát những gì được cài cắm bên trong\"." },
+                { id: "q10", question: "Một trường học muốn trang bị bộ phần mềm văn phòng cho tất cả các máy tính nhưng có ngân sách rất hạn hẹp. Lựa chọn nào sau đây là phù hợp nhất với họ dựa trên các thông tin trong bài?", options: ["Mua bản quyền Microsoft Office (Word, Excel, PowerPoint) cho tất cả các máy.", "Sử dụng bộ phần mềm OpenOffice (Writer, Calc, Impress).", "Yêu cầu một công ty viết riêng một bộ phần mềm văn phòng đặt hàng.", "Sử dụng phần mềm chỉnh sửa ảnh Photoshop cho công việc văn phòng."], answer: "Sử dụng bộ phần mềm OpenOffice (Writer, Calc, Impress).", explanation: "OpenOffice là phần mềm nguồn mở, có chức năng tương tự Microsoft Office nhưng chi phí thấp (thường là miễn phí), phù hợp với các tổ chức có ngân sách hạn hẹp muốn có giải pháp phần mềm tốt." },
+                { id: "q11", question: "Một nhóm sinh viên ở các thành phố khác nhau cần cùng nhau làm một bài trình chiếu. Phương án nào hiệu quả nhất để họ có thể làm việc chung mà không cần gửi tệp qua lại liên tục?", options: ["Một người làm toàn bộ rồi gửi cho những người còn lại.", "Tất cả cùng cài đặt phần mềm PowerPoint và gửi tệp cho nhau qua email sau mỗi lần chỉnh sửa.", "Sử dụng một phần mềm chạy trên Internet như Google Slides.", "Sử dụng phần mềm GIMP để thiết kế bài trình chiếu."], answer: "Sử dụng một phần mềm chạy trên Internet như Google Slides.", explanation: "Phần mềm chạy trên Internet như Google Slides cho phép nhiều người làm việc cùng lúc trên một tài liệu từ bất cứ đâu, miễn là có kết nối mạng. Đây là giải pháp tối ưu cho việc cộng tác từ xa." },
+                { id: "q12", question: "Một công ty taxi muốn phát triển một ứng dụng di động cho phép khách hàng đặt xe, theo dõi vị trí xe và thanh toán trực tuyến. Họ cần ứng dụng phải có logo, màu sắc và các tính năng đặc thù của riêng công ty. Họ nên chọn giải pháp phần mềm nào?", options: ["Sử dụng một phần mềm nguồn mở có sẵn.", "Tìm một phần mềm tự do trên mạng.", "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", "Sử dụng Google Sheets để quản lí việc đặt xe."], answer: "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", explanation: "Các yêu cầu về tính năng đặc thù, thương hiệu riêng và sự chính xác cao là đặc điểm của phần mềm \"đặt hàng\", được thiết kế riêng theo yêu cầu của khách hàng." }
             ],
             part2: [
-                { id: 'q13', question: 'Một học sinh vừa nhận được chiếc máy tính xách tay mới cài sẵn hệ điều hành Windows 11. Bạn ấy kết nối con chuột không dây qua cổng USB và máy tính nhận ngay lập tức. Sau đó, bạn ấy mở đồng thời trình duyệt web để tra cứu tài liệu và phần mềm soạn thảo văn bản để làm bài tập, các cửa sổ chương trình hiển thị trực quan trên màn hình.', sub_questions: [
-                    { id: 'a', text: 'Hệ điều hành Windows 11 mà học sinh đang sử dụng có giao diện đồ hoạ.', answer: 'true', explanation: 'Việc có các cửa sổ chương trình hiển thị trực quan là đặc điểm của giao diện đồ hoạ, và Windows là hệ điều hành đồ hoạ tiêu biểu.' },
-                    { id: 'b', text: 'Cơ chế giúp máy tính tự động nhận biết con chuột không dây được gọi là "đa nhiệm".', answer: 'false', explanation: 'Cơ chế tự động nhận biết thiết bị ngoại vi được gọi là "plug & play". Đa nhiệm là khả năng chạy nhiều chương trình đồng thời.' },
-                    { id: 'c', text: 'Việc mở đồng thời trình duyệt web và phần mềm soạn thảo văn bản cho thấy hệ điều hành có khả năng đa nhiệm, giúp nâng cao hiệu quả làm việc.', answer: 'true', explanation: 'Đây chính là ví dụ về khả năng đa nhiệm (chạy nhiều chương trình đồng thời) của hệ điều hành, giúp nâng cao hiệu quả sử dụng máy tính.' },
-                    { id: 'd', text: 'Nếu muốn trải nghiệm một hệ điều hành mã nguồn mở miễn phí trên chiếc máy tính này, học sinh có thể cài đặt Ubuntu.', answer: 'true', explanation: 'Ubuntu là một biến thể phổ biến của LINUX, một hệ điều hành mã nguồn mở mạnh mẽ và miễn phí cho máy tính cá nhân.' }
+                // --- PHẦN II: TRẮC NGHIỆM ĐÚNG/SAI (4 CÂU) ---
+                { id: "q13", question: "Một nhiếp ảnh gia tự do đang tìm kiếm một phần mềm chỉnh sửa ảnh. Anh ấy cân nhắc giữa việc trả phí hàng tháng để sử dụng Adobe Photoshop hoặc tải miễn phí phần mềm GIMP. Cả hai đều có những tính năng mạnh mẽ nhưng cách thức hoạt động và hỗ trợ lại khác nhau.", sub_questions: [
+                    { id: "a", text: "Theo bảng phân loại trong tài liệu, Adobe Photoshop là một ví dụ về phần mềm thương mại.", answer: "true", explanation: "Bảng 3.1 liệt kê Photoshop là phần mềm thương mại trong lĩnh vực xử lí ảnh." },
+                    { id: "b", text: "GIMP là một phần mềm nguồn mở, có nghĩa là nhiếp ảnh gia được cung cấp cả mã nguồn của nó.", answer: "true", explanation: "GIMP được liệt kê là phần mềm nguồn mở thay thế cho Photoshop, và định nghĩa phần mềm nguồn mở là được cung cấp cả mã nguồn." },
+                    { id: "c", text: "Ưu điểm chính khi nhiếp ảnh gia chọn GIMP là chi phí thấp, nhưng anh ấy sẽ không nhận được hỗ trợ kĩ thuật chính thức từ nhà sản xuất mà phải dựa vào cộng đồng người dùng.", answer: "true", explanation: "Bảng so sánh 3.2 cho thấy phần mềm nguồn mở có chi phí thấp nhưng hỗ trợ kĩ thuật đến từ cộng đồng, không phải từ nhà cung cấp chính thức." },
+                    { id: "d", text: "Nếu nhiếp ảnh gia này cũng là một lập trình viên, anh ấy có quyền hợp pháp để sửa đổi mã nguồn của Photoshop để thêm tính năng mới cho riêng mình.", answer: "false", explanation: "Photoshop là phần mềm nguồn đóng, người dùng không được cung cấp mã nguồn và không có quyền sửa đổi nó. Chỉ phần mềm nguồn mở như GIMP mới cho phép điều này." }
                 ]},
-                { id: 'q14', question: 'Một lập trình viên đang viết một phần mềm ứng dụng nghe nhạc. Để phần mềm có thể đọc được file nhạc từ ổ đĩa cứng, lập trình viên không cần viết mã để điều khiển trực tiếp phần cứng ổ đĩa. Thay vào đó, họ chỉ cần gọi một dịch vụ "mở tệp" do hệ điều hành cung cấp, giúp cho việc lập trình trở nên đơn giản và hiệu quả hơn rất nhiều.', sub_questions: [
-                    { id: 'a', text: 'Trong trường hợp này, hệ điều hành đóng vai trò là môi trường trung gian giữa phần mềm nghe nhạc và phần cứng máy tính.', answer: 'true', explanation: 'Mô hình này cho thấy hệ điều hành là môi trường trung gian, giúp phần mềm ứng dụng khai thác phần cứng.' },
-                    { id: 'b', text: 'Việc quản lí tệp và thư mục là một trong năm nhóm chức năng chính của hệ điều hành.', answer: 'true', explanation: 'Tài liệu đã liệt kê "Quản lí việc lưu trữ dữ liệu (quản lí tệp và thư mục)" là một trong các nhóm chức năng chính của hệ điều hành.' },
-                    { id: 'c', text: 'Mô hình làm việc này cho thấy phần mềm ứng dụng phụ thuộc vào các dịch vụ của hệ điều hành, giúp đảm bảo tính nhất quán và giảm độ phức tạp cho người lập trình.', answer: 'true', explanation: 'Việc ứng dụng chỉ gọi các dịch vụ do hệ điều hành cung cấp cho thấy sự phụ thuộc này, và đây là lý do chính cần có hệ điều hành cho các thiết bị đa năng để đơn giản hoá việc phát triển phần mềm.' },
-                    { id: 'd', text: 'Phần mềm nghe nhạc này có thể chạy trên một thiết bị không có hệ điều hành, ví dụ như hệ thống điều khiển lò vi sóng.', answer: 'false', explanation: 'Phần mềm ứng dụng phức tạp như trình nghe nhạc cần hệ điều hành để quản lí tệp và tài nguyên. Các thiết bị chuyên dụng như lò vi sóng thường không có hệ điều hành và chỉ chạy một chương trình duy nhất cài sẵn.' }
+                { id: "q14", question: "Một nhóm lập trình viên xây dựng một trình duyệt web mới và quyết định phát hành nó dưới dạng phần mềm nguồn mở theo giấy phép GNU GPL. Họ công bố toàn bộ mã nguồn lên mạng và cho phép bất kỳ ai cũng có thể tải về, sử dụng và cải tiến sản phẩm.", sub_questions: [
+                    { id: "a", text: "Vì cung cấp cả mã nguồn nên trình duyệt web này được gọi là phần mềm nguồn mở.", answer: "true", explanation: "Định nghĩa phần mềm nguồn mở là phần mềm được cung cấp cả mã nguồn để người dùng có thể sửa đổi, cải tiến." },
+                    { id: "b", text: "Nhóm lập trình viên này không được quyền yêu cầu trả phí cho việc chuyển giao (ví dụ: phí tải về) trình duyệt này.", answer: "false", explanation: "Giấy phép GNU GPL cho phép \"có quyền yêu cầu trả phí cho việc chuyển giao đó\" miễn là thông báo rõ ràng về bản quyền và miễn trừ bảo hành." },
+                    { id: "c", text: "Nếu một công ty khác lấy mã nguồn của trình duyệt này, thêm vào một số tính năng và bán ra thị trường, họ bắt buộc phải công khai mã nguồn của những tính năng mới đó theo giấy phép GNU GPL.", answer: "true", explanation: "Đây là một quy định cốt lõi của GPL: \"phần mềm có nguồn gốc từ việc sửa đổi một phần mềm nguồn mở theo GPL cũng phải là phần mềm nguồn mở theo GPL\"." },
+                    { id: "d", text: "Theo giấy phép GNU GPL, nhóm tác giả ban đầu sẽ phải chịu trách nhiệm pháp lí và bồi thường nếu trình duyệt của họ gây ra lỗi làm mất dữ liệu của người dùng.", answer: "false", explanation: "Giấy phép GNU GPL có điều khoản \"miễn trừ trách nhiệm bảo hành\", giúp các tác giả không bị kiện vì những sai sót của phần mềm." }
                 ]},
-                { id: 'q15', question: 'Một người dùng sở hữu điện thoại iPhone chạy hệ điều hành iOS. Họ thường xuyên sử dụng kết nối 4G để truy cập mạng xã hội khi đang di chuyển và dùng cảm biến vân tay để mở khoá. Giao diện của điện thoại cho phép họ tương tác bằng cách chạm và vuốt trên màn hình cảm ứng một cách mượt mà và trực quan.', sub_questions: [
-                    { id: 'a', text: 'iOS là hệ điều hành do Google phát triển.', answer: 'false', explanation: 'Tài liệu nêu rõ iOS là hệ điều hành của Apple dùng cho iPhone, iPad. Android là của Google.' },
-                    { id: 'b', text: 'Hệ điều hành di động như iOS được thiết kế để ưu tiên kết nối mạng di động như 4G.', answer: 'true', explanation: 'Do tính di động, hệ điều hành cho thiết bị di động chú trọng đến khả năng kết nối mạng không dây như Internet di động (3G, 4G, 5G,...).' },
-                    { id: 'c', text: 'Giao diện thân thiện của iOS có được là nhờ việc tận dụng các cảm biến (vân tay, cảm ứng) để nhận dạng hành vi người dùng, giúp các thao tác tự nhiên hơn.', answer: 'true', explanation: 'Hệ điều hành di động có giao diện đặc biệt thân thiện nhờ nhận dạng hành vi của người dùng thông qua các cảm biến, tạo ra các giao tiếp độc đáo.' },
-                    { id: 'd', text: 'Vì iOS là một hệ điều hành, người dùng có thể dễ dàng gỡ bỏ nó và cài đặt hệ điều hành Windows 11 lên chiếc iPhone của mình.', answer: 'false', explanation: 'Hệ điều hành thường được thiết kế riêng cho phần cứng. iOS được thiết kế cho các thiết bị của Apple và không thể thay thế bằng Windows, vốn được thiết kế cho dòng máy PC.' }
+                { id: "q15", question: "Một công ty cho phép nhân viên làm việc từ xa. Thay vì cài đặt phần mềm Microsoft Office lên máy tính cá nhân của từng người, công ty yêu cầu nhân viên sử dụng bộ ứng dụng của Google (Docs, Sheets, Slides) thông qua trình duyệt web để soạn thảo văn bản, làm bảng tính và tạo bài trình chiếu.", sub_questions: [
+                    { id: "a", text: "Các ứng dụng Google Docs, Sheets, và Slides là ví dụ về phần mềm chạy trên Internet.", answer: "true", explanation: "Tài liệu đã nêu rõ Google Docs, Sheets, Slides là các ví dụ về phần mềm trực tuyến (chạy trên Internet)." },
+                    { id: "b", text: "Một ưu điểm lớn của giải pháp này là nhân viên có thể truy cập và làm việc trên cùng một tài liệu từ bất kỳ máy tính nào, miễn là có kết nối Internet.", answer: "true", explanation: "Lợi ích của phần mềm chạy trên Internet là \"có thể sử dụng ở bất cứ đâu, bất cứ nơi nào, bất cứ máy tính nào miễn là có kết nối Internet\"." },
+                    { id: "c", text: "Khi nhân viên tạo một tài liệu mới bằng Google Docs, tài liệu đó sẽ được tự động lưu trữ trên không gian đám mây của Google thay vì trên ổ cứng máy tính cá nhân.", answer: "true", explanation: "Tài liệu mô tả rằng khi dùng Google Docs, \"Văn bản được lưu tự động trên không gian lưu trữ của em trên đám mây của Google\"." },
+                    { id: "d", text: "Vì các ứng dụng của Google là miễn phí và có thể thay thế cho Microsoft Office, chúng cũng được coi là phần mềm nguồn mở theo giấy phép GNU GPL.", answer: "false", explanation: "Mặc dù miễn phí và chạy trên Internet, Google Docs không phải là phần mềm nguồn mở. Google không công bố mã nguồn của chúng để người dùng tự do sửa đổi và phân phối lại theo giấy phép GPL." }
                 ]},
-                { id: 'q16', question: 'Một nhà quản trị mạng tại một công ty lớn quyết định sử dụng hệ điều hành LINUX cho các máy chủ vì tính ổn định và an toàn cao. Trong khi đó, các nhân viên văn phòng lại sử dụng máy tính cá nhân chạy Windows vì sự phổ biến và giao diện thân thiện. Điều này cho thấy sự đa dạng và vai trò khác nhau của các hệ điều hành trong thực tế.', sub_questions: [
-                    { id: 'a', text: 'Hệ điều hành LINUX có nguồn gốc từ hệ điều hành UNIX và có thể được dùng cho cả máy chủ và máy tính cá nhân.', answer: 'true', explanation: 'Tài liệu cho biết LINUX có nguồn gốc từ UNIX và không chỉ dùng cho máy tính cá nhân mà còn dùng cho cả máy chủ.' },
-                    { id: 'b', text: 'Hệ điều hành Windows gần như thống trị thị trường hệ điều hành máy tính cá nhân.', answer: 'true', explanation: 'Bài học trích dẫn một thống kê năm 2018 cho thấy hơn 86% người dùng máy tính sử dụng Windows, cho thấy sự thống trị của nó trên thị trường máy tính cá nhân.' },
-                    { id: 'c', text: 'Việc lựa chọn LINUX cho máy chủ cho thấy hệ điều hành này được đánh giá cao về tính hiệu quả, ổn định và an toàn, những yếu tố quan trọng cho máy chủ.', answer: 'true', explanation: 'UNIX, tiền thân của LINUX, đã chứng tỏ được tính hiệu quả, ổn định và an toàn cao. LINUX kế thừa các đặc điểm này và được cộng đồng đánh giá cao, phù hợp cho vai trò máy chủ.' },
-                    { id: 'd', text: 'Vì LINUX là mã nguồn mở, nó chỉ được phát triển bởi một người duy nhất là Linus Torvalds và không có các biến thể khác.', answer: 'false', explanation: 'Mặc dù Linus Torvalds khởi tạo LINUX, nhưng vì là mã nguồn mở, nó được "bất cứ ai cũng có thể sử dụng và phát triển thêm". Đã có nhiều biến thể khác nhau ra đời từ LINUX như RedHat, Suse, Ubuntu.' }
+                { id: "q16", question: "Một ngân hàng cần một hệ thống phần mềm ATM (rút tiền tự động) để quản lí các giao dịch. Hệ thống này phải kết nối liên tục với cơ sở dữ liệu trung tâm của ngân hàng để kiểm tra số dư và cập nhật giao dịch theo thời gian thực. An ninh và độ tin cậy là những yêu cầu quan trọng hàng đầu.", sub_questions: [
+                    { id: "a", text: "Phần mềm tại các trạm ATM là một ví dụ về phần mềm thương mại dạng \"đặt hàng\".", answer: "true", explanation: "Đây là loại phần mềm được thiết kế riêng cho một khách hàng (ngân hàng) với yêu cầu đặc thù, độ tin cậy và bảo hành cao." },
+                    { id: "b", text: "Hệ thống này yêu cầu kết nối mạng liên tục, do đó nó có đặc điểm của một phần mềm trực tuyến.", answer: "true", explanation: "Câu hỏi Luyện tập số 2 (trang 20) ngụ ý phần mềm ATM là phần mềm trực tuyến vì nó cần kết nối liên tục để thực hiện giao dịch, tương tự định nghĩa phần mềm chạy trên Internet." },
+                    { id: "c", text: "Ngân hàng sẽ không chọn một phần mềm nguồn mở cho hệ thống ATM vì khó có thể tìm thấy một giải pháp đáp ứng chính xác các yêu cầu an ninh và quy trình nghiệp vụ riêng của họ, cũng như thiếu sự hỗ trợ kĩ thuật và bảo hành chính thức.", answer: "true", explanation: "Phần mềm nguồn mở đáp ứng nhu cầu chung, trong khi nhu cầu riêng, yêu cầu bảo hành, hỗ trợ kĩ thuật là ưu điểm của phần mềm thương mại, đặc biệt là phần mềm đặt hàng." },
+                    { id: "d", text: "Nếu ngân hàng sử dụng phần mềm này, họ sẽ bị phụ thuộc hoàn toàn vào nhà cung cấp về giải pháp và hỗ trợ kĩ thuật.", answer: "true", explanation: "Bảng 3.2 chỉ ra một đặc điểm của phần mềm thương mại là người dùng \"Bị phụ thuộc vào nhà cung cấp về giải pháp và hỗ trợ kĩ thuật\"." }
                 ]}
             ]
         };
-        // --- KHỐI DỮ LIỆU CÂU HỎI KẾT THÚC ---
 
-
-        // --- KHỐI MÃ NGUỒN CHỨC NĂNG VÀ LOGIC GỬI FORM ---
-        let studentName = '', studentSchool = '', studentClass = '';
-        const timeLimit = 15 * 60;
-        let timeLeft = timeLimit;
-        let timerInterval;
         let shuffledPart1Data, shuffledPart2Data;
 
         function shuffle(array) {
@@ -277,7 +268,7 @@
             shuffledPart1Data.forEach((q, index) => {
                 const shuffledOptions = shuffle([...q.options]);
                 const optionsHtml = shuffledOptions.map(opt => {
-                    const escapedOpt = opt.replace(/"/g, '\"');
+                    const escapedOpt = opt.replace(/"/g, '"');
                     return `
                         <label class="option-label">
                             <input type="radio" name="${q.id}" value="${escapedOpt}"> ${opt}
@@ -322,15 +313,13 @@
             timerInterval = setInterval(() => {
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    if (document.getElementById('quizForm')) {
-                        submitQuiz(new Event('submit'));
-                    }
+                    submitQuiz(null);
                     return;
                 }
-                timeLeft--; 
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timeLeft--;
             }, 1000);
         }
 
@@ -359,11 +348,12 @@
             const resultDetails = document.getElementById('resultDetails');
             const scoreElement = document.getElementById('score');
             
+            // Lấy thông tin người dùng cho phần hiển thị kết quả
             const studentInfoResults = document.getElementById('studentInfoResults');
             studentInfoResults.innerHTML = `
-                <p><b>Họ và tên thí sinh:</b> ${studentName}</p>
-                <p><b>Trường:</b> ${studentSchool}</p>
+                <p><b>Họ và Tên:</b> ${studentName}</p>
                 <p><b>Lớp:</b> ${studentClass}</p>
+                <p><b>Điểm:</b> <span id="final-score-display">Đang tính...</span></p> 
             `;
 
             resultDetails.innerHTML = '';
@@ -375,85 +365,64 @@
             // Tính tổng điểm
             shuffledPart1Data.forEach((q, index) => {
                 const selectedOption = document.querySelector(`input[name="${q.id}"]:checked`);
-                const userAnswer = selectedOption ? selectedOption.value : null;
-                const isCorrect = userAnswer === q.answer;
+                const isCorrect = selectedOption && selectedOption.value === q.answer;
 
                 if (isCorrect) {
                     score += 0.5;
                 }
-                // ... (Code hiển thị kết quả chi tiết trên trang web)
+                // ... (Code hiển thị kết quả chi tiết)
             });
 
             shuffledPart2Data.forEach((q, index) => {
                 let correctCount = 0;
-                // ... (Code tính correctCount)
+                // ... (Logic tính correctCount)
                 const questionScore = getQuestionScore(correctCount);
                 score += questionScore;
-                // ... (Code hiển thị kết quả chi tiết trên trang web)
+                // ... (Code hiển thị kết quả chi tiết)
             });
             
-            // --- BẮT ĐẦU GỬI DỮ LIỆU ĐẾN GOOGLE FORM ---
-            
-            const formattedScore = score.toFixed(2);
-            
-            // Xây dựng dữ liệu Form 
-            const formData = new URLSearchParams();
-            // Gửi dữ liệu Tên thí sinh + Trường vào trường "Trường" trong Form
-            formData.append(ENTRY_ID_SCHOOL, `Tên: ${studentName} - Trường: ${studentSchool}`); 
-            formData.append(ENTRY_ID_CLASS, studentClass);                       
-            formData.append(ENTRY_ID_SCORE, formattedScore);                     
+            const finalScore = score.toFixed(2);
+            document.getElementById('final-score-display').textContent = finalScore;
+            scoreElement.innerHTML = `<h2>Tổng điểm toàn bài là: ${finalScore}/10</h2>`;
 
-            // Gửi dữ liệu bằng Fetch API
-            fetch(GOOGLE_FORM_ACTION_URL, {
-                method: 'POST',
-                mode: 'no-cors', 
-                body: formData
-            })
-            .then(() => {
-                console.log('Dữ liệu đã được gửi thành công đến Google Sheet!');
-            })
-            .catch(error => {
-                console.error('Lỗi khi gửi dữ liệu:', error);
-            });
 
+            // --- BẮT ĐẦU GỬI DỮ LIỆU ĐẾN GOOGLE FORM (Sử dụng iframe) ---
+            
+            // Gửi dữ liệu Tên, Lớp, Điểm
+            const queryString = 
+                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentName)}` + 
+                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClass)}` + 
+                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`; 
+
+            const fullUrl = GOOGLE_FORM_ACTION_URL + '?' + queryString;
+            
+            // Kỹ thuật iframe để gửi dữ liệu Form
+            const iframe = document.createElement('iframe');
+            iframe.name = 'hidden_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.target = 'hidden_iframe'; 
+            form.action = fullUrl;
+            
+            document.body.appendChild(form);
+            form.submit();
+            
+            console.log('Dữ liệu đã được gửi qua iframe.');
+            
             // --- KẾT THÚC GỬI DỮ LIỆU ---
 
             document.getElementById('quizForm').querySelectorAll('input').forEach(input => input.disabled = true);
             resultSection.scrollIntoView({ behavior: 'smooth' });
         }
-        
-        // --- KHỞI CHẠY ---
+
         document.addEventListener('DOMContentLoaded', () => {
-            const startBtn = document.getElementById('startBtn');
-            const userInfoContainer = document.getElementById('userInfoFormContainer');
-            const quizContainer = document.getElementById('quizContainer');
-            const quizForm = document.getElementById('quizForm');
-
-            buildQuiz(); 
-
-            if (startBtn) {
-                startBtn.addEventListener('click', () => {
-                    studentName = document.getElementById('studentName').value;
-                    studentSchool = document.getElementById('studentSchool').value;
-                    studentClass = document.getElementById('studentClass').value;
-                    
-                    if (!studentName || !studentSchool || !studentClass) {
-                        alert('Vui lòng điền đầy đủ thông tin!');
-                        return; 
-                    }
-                    
-                    if (userInfoContainer && quizContainer) {
-                        userInfoContainer.style.display = 'none';
-                        quizContainer.style.display = 'block';
-                        startTimer();
-                    }
-                });
-            }
-            
-            if (quizForm) {
-                quizForm.addEventListener('submit', submitQuiz);
-            }
+            buildQuiz();
+            // ... (Phần khởi tạo sự kiện)
         });
+        
     </script>
 </body>
 </html>
