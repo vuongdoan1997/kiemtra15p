@@ -104,7 +104,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px auto 0;
+            margin: 20px auto 0; /* Thêm margin-top */
             transition: background-color 0.3s;
         }
         .submit-btn:hover { background-color: #0056b3; }
@@ -153,8 +153,6 @@
                     <label for="studentName">Họ và Tên:</label>
                     <input type="text" id="studentName" name="studentName" required>
                 </div>
-                <input type="hidden" id="studentSchool" name="studentSchool" value="KHÔNG_SỬ_DỤNG">
-                
                 <div class="form-group">
                     <label for="studentClass">Lớp:</label>
                     <input type="text" id="studentClass" name="studentClass" required>
@@ -176,7 +174,7 @@
                 </div>
                 <div id="part1-questions"></div>
                 
-                <div style="background-color: azure; color: green; padding: 5px; text-align: justify;">
+                <div style="background-color: azure; color: green; padding: 5px; text-align: justify; margin-top: 20px;">
                     <b>PHẦN II. Thí sinh trả lời từ câu 13 đến câu 16. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai</b>
                 </div>
                 <div id="part2-questions"></div>
@@ -195,18 +193,14 @@
 
     <script>
         // --- CẤU HÌNH GOOGLE FORM CỦA BẠN ---
-        // Action URL của Form
         const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc09y40H6BEgtLqI3R1Q04F8kljeqHX4Bij1G7sIlqk_Fmw5A/formResponse";
-        
-        // Entry ID của các trường nhập liệu trong Form của bạn
-        const ENTRY_ID_NAME = "entry.699633454";   // Dùng trường này để lưu Họ và Tên
-        const ENTRY_ID_CLASS = "entry.371774655";  // Dùng trường này để lưu Lớp
-        const ENTRY_ID_SCORE = "entry.46168601";   // Dùng trường này để lưu Điểm số
+        const ENTRY_ID_NAME = "entry.699633454";   
+        const ENTRY_ID_CLASS = "entry.371774655";  
+        const ENTRY_ID_SCORE = "entry.46168601";   
 
         // --- KHỐI DỮ LIỆU CÂU HỎI (Bài 3) ---
         const quizData = {
             part1: [
-                // --- PHẦN I: TRẮC NGHIỆM ĐƠN (12 CÂU) ---
                 { id: "q1", question: "Phần mềm được chuyển giao dưới dạng mã máy, khó đọc hiểu và nhằm mục đích bảo vệ chống đánh cắp ý tưởng được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm nguồn đóng", "Phần mềm tự do", "Phần mềm chạy trên Internet"], answer: "Phần mềm nguồn đóng", explanation: "Tài liệu định nghĩa: \"Phần mềm chuyển giao dưới dạng mã máy thường được gọi là phần mềm nguồn đóng\"." },
                 { id: "q2", question: "Theo tài liệu, ví dụ nào sau đây là một phần mềm nguồn mở?", options: ["Microsoft Word", "Photoshop", "Linux", "Acrobat Pro DC"], answer: "Linux", explanation: "Bảng 3.1 liệt kê Linux là phần mềm nguồn mở có chức năng tương đương hệ điều hành thương mại Windows." },
                 { id: "q3", question: "Loại giấy phép phần mềm nguồn mở nào được áp dụng rộng rãi nhất theo nội dung bài học?", options: ["Giấy phép công cộng GNU GPL", "Giấy phép Microsoft", "Giấy phép Adobe", "Giấy phép thương mại"], answer: "Giấy phép công cộng GNU GPL", explanation: "Tài liệu nêu rõ: \"Có nhiều loại giấy phép phần mềm nguồn mở, trong đó giấy phép công cộng GNU GPL (GNU General Public License) được áp dụng rộng rãi nhất\"." },
@@ -248,7 +242,15 @@
             ]
         };
 
+        // --- KHAI BÁO BIẾN TOÀN CỤC ---
+        let studentName = '', studentClass = '';
         let shuffledPart1Data, shuffledPart2Data;
+
+        // SỬA LỖI 1: Thêm lại các biến cần thiết cho timer
+        const timeLimit = 15 * 60; // 15 phút
+        let timeLeft = timeLimit;
+        let timerInterval;
+
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -267,7 +269,7 @@
             shuffledPart1Data.forEach((q, index) => {
                 const shuffledOptions = shuffle([...q.options]);
                 const optionsHtml = shuffledOptions.map(opt => {
-                    const escapedOpt = opt.replace(/"/g, '"');
+                    const escapedOpt = opt.replace(/"/g, '&quot;');
                     return `
                         <label class="option-label">
                             <input type="radio" name="${q.id}" value="${escapedOpt}"> ${opt}
@@ -307,19 +309,19 @@
 
         function startTimer() {
             const countdownElement = document.getElementById('countdown');
-            if (!countdownElement) return;
-
             timerInterval = setInterval(() => {
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    // Lỗi ở đây: cần đảm bảo nó gọi submitQuiz
-                    submitQuiz(null); // Gọi submitQuiz khi hết giờ
-                    return;
-                }
+                // Hiển thị thời gian trước khi giảm
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                timeLeft--; // Lỗi đã sửa: decrement phải đặt sau khi hiển thị
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Đã hết giờ làm bài! Hệ thống sẽ tự động nộp bài của bạn.");
+                    submitQuiz(new Event('submit')); // Tạo một event giả để nộp bài
+                } else {
+                    timeLeft--;
+                }
             }, 1000);
         }
 
@@ -338,6 +340,7 @@
         }
 
         function submitQuiz(event) {
+            // Ngăn chặn hành vi mặc định của form là tải lại trang
             if (event) {
                 event.preventDefault();
             }
@@ -348,68 +351,126 @@
             const resultDetails = document.getElementById('resultDetails');
             const scoreElement = document.getElementById('score');
             
-            // Lấy thông tin người dùng cho phần hiển thị kết quả (CHỈ HIỂN THỊ TÊN, LỚP, ĐIỂM)
             const studentInfoResults = document.getElementById('studentInfoResults');
             studentInfoResults.innerHTML = `
                 <p><b>Họ và Tên:</b> ${studentName}</p>
                 <p><b>Lớp:</b> ${studentClass}</p>
-                <p><b>Điểm:</b> <span id="final-score-display">Đang tính...</span></p> 
             `;
 
-            resultDetails.innerHTML = '';
+            resultDetails.innerHTML = ''; 
             resultSection.style.display = 'block';
             document.querySelector('.submit-btn').style.display = 'none';
 
-            // --- PHẦN CHẤM ĐIỂM VÀ TÍNH ĐIỂM ---
+            // --- SỬA LỖI 2: VIẾT LẠI HOÀN TOÀN LOGIC CHẤM ĐIỂM VÀ HIỂN THỊ KẾT QUẢ ---
             
-            // Tính tổng điểm
+            // Chấm điểm và hiển thị kết quả Phần I
             shuffledPart1Data.forEach((q, index) => {
+                const questionDiv = document.getElementById(q.id);
+                const questionHeaderHTML = `Câu ${index + 1}: ${q.question}`;
                 const selectedOption = document.querySelector(`input[name="${q.id}"]:checked`);
-                const isCorrect = selectedOption && selectedOption.value === q.answer;
-                if (isCorrect) { score += 0.5; }
+                const userAnswer = selectedOption ? selectedOption.value : null;
+                const isCorrect = userAnswer === q.answer;
+
+                if (isCorrect) {
+                    score += 0.5;
+                }
+
+                // Tô màu đáp án
+                questionDiv.querySelectorAll('.option-label').forEach(label => {
+                    const input = label.querySelector('input');
+                    if (input.value === q.answer) {
+                        label.classList.add('correct');
+                    }
+                    if (userAnswer && input.value === userAnswer && !isCorrect) {
+                        label.classList.add('incorrect');
+                    }
+                });
+
+                // Tạo div kết quả chi tiết
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item', isCorrect ? 'correct' : 'incorrect');
+                resultItem.innerHTML = `
+                    <p><strong>${questionHeaderHTML}</strong></p>
+                    <p>Đáp án của bạn: <span class="${isCorrect ? 'correct-answer-text' : 'your-answer-text'}">${userAnswer || 'Chưa chọn'}</span></p>
+                    <p>Đáp án đúng: <span class="correct-answer-text">${q.answer}</span></p>
+                    <div class="explanation"><p>Giải thích: ${q.explanation}</p></div>
+                `;
+                resultDetails.appendChild(resultItem);
             });
 
+            // Chấm điểm và hiển thị kết quả Phần II
             shuffledPart2Data.forEach((q, index) => {
+                const questionDiv = document.getElementById(q.id);
+                const questionHeaderHTML = `Câu ${shuffledPart1Data.length + index + 1}: ${q.question}`;
                 let correctCount = 0;
-                // Lấy correctCount...
+                let subResultHtml = '';
+
+                q.sub_questions.forEach(sub => {
+                    const selectedOption = document.querySelector(`input[name="${q.id}_${sub.id}"]:checked`);
+                    const userAnswer = selectedOption ? selectedOption.value : null;
+                    const isCorrect = userAnswer === sub.answer;
+                    
+                    if(isCorrect) {
+                        correctCount++;
+                    }
+
+                    // Tô màu đáp án
+                    questionDiv.querySelectorAll(`input[name="${q.id}_${sub.id}"]`).forEach(input => {
+                        const label = input.closest('.option-label');
+                        if (input.value === sub.answer) {
+                            label.classList.add('correct');
+                        }
+                        if (userAnswer && input.value === userAnswer && !isCorrect) {
+                            label.classList.add('incorrect');
+                        }
+                    });
+
+                    subResultHtml += `
+                        <p style="margin-left: 20px;">${sub.id}) ${sub.text}</p>
+                        <p style="margin-left: 40px;">Đáp án của bạn: <span class="${isCorrect ? 'correct-answer-text' : 'your-answer-text'}">${userAnswer === 'true' ? 'Đúng' : userAnswer === 'false' ? 'Sai' : 'Chưa chọn'}</span></p>
+                        <p style="margin-left: 40px;">Đáp án đúng: <span class="correct-answer-text">${sub.answer === 'true' ? 'Đúng' : 'Sai'}</span></p>
+                        <div class="explanation" style="margin-left: 20px;"><p>Giải thích: ${sub.explanation}</p></div>
+                    `;
+                });
+                
                 const questionScore = getQuestionScore(correctCount);
                 score += questionScore;
+
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item', correctCount === 4 ? 'correct' : 'incorrect');
+                resultItem.innerHTML = `
+                    <p><strong>${questionHeaderHTML}</strong></p>
+                    ${subResultHtml}
+                    <div style="margin-top: 15px; font-weight: bold;"><p>Số đáp án đúng: ${correctCount}/4</p><p>Điểm của câu này: ${questionScore.toFixed(2)}/1.00</p></div>
+                `;
+                resultDetails.appendChild(resultItem);
             });
-            
+
+            // Hiển thị tổng điểm cuối cùng
             const finalScore = score.toFixed(2);
-            document.getElementById('final-score-display').textContent = finalScore;
-            scoreElement.innerHTML = `<h2>Tổng điểm toàn bài là: ${finalScore}/10</h2>`;
+            scoreElement.innerHTML = `<h2>Tổng điểm toàn bài của bạn là: ${finalScore}/10</h2>`;
 
-
-            // --- GỬI DỮ LIỆU ĐẾN GOOGLE FORM ---
-            
+            // --- GỬI DỮ LIỆU ĐẾN GOOGLE FORM (Phần này của bạn đã tốt, giữ nguyên) ---
             const studentNameValue = document.getElementById('studentName').value.trim();
             const studentClassValue = document.getElementById('studentClass').value.trim();
             
-            // Tạo chuỗi truy vấn (Query String) thủ công, mã hóa dữ liệu
             const queryString = 
-                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentNameValue)}` + // Gửi Họ và Tên
-                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClassValue)}` + // Gửi Lớp
-                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`; // Gửi Điểm số
+                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentNameValue)}` +
+                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClassValue)}` +
+                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`;
 
-            const fullUrl = GOOGLE_FORM_ACTION_URL + '?' + queryString;
-            
-            // Kỹ thuật iframe để gửi dữ liệu Form (đảm bảo gửi Form khi chạy trên GitHub Pages)
-            const iframe = document.createElement('iframe');
-            iframe.name = 'hidden_iframe';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.target = 'hidden_iframe'; 
-            form.action = fullUrl;
-            
-            document.body.appendChild(form);
-            form.submit();
-            
+            // Sử dụng fetch để gửi dữ liệu trong nền, không cần iframe
+            fetch(GOOGLE_FORM_ACTION_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Quan trọng: chế độ no-cors để không bị lỗi CORS
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: queryString
+            }).catch(error => console.error('Error submitting form:', error));
             // --- KẾT THÚC GỬI DỮ LIỆU ---
 
+            // Vô hiệu hóa các input và cuộn đến phần kết quả
             document.getElementById('quizForm').querySelectorAll('input').forEach(input => input.disabled = true);
             resultSection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -422,25 +483,21 @@
             const quizContainer = document.getElementById('quizContainer');
 
             startBtn.addEventListener('click', function() {
-                // Lấy giá trị trực tiếp từ input fields
                 const nameValue = document.getElementById('studentName').value.trim();
                 const classValue = document.getElementById('studentClass').value.trim();
                 
-                // Cập nhật biến toàn cục
-                studentName = nameValue;
-                // studentSchool được giữ là KHÔNG_SỬ_DỤNG
-                studentClass = classValue;
-                
-                // ĐÃ SỬA: Chỉ kiểm tra Tên và Lớp (vì Trường là hidden)
                 if (!nameValue || !classValue) { 
                     alert('Vui lòng điền đầy đủ Họ và Tên, và Lớp!');
                     return; 
                 }
+
+                // Cập nhật biến toàn cục
+                studentName = nameValue;
+                studentClass = classValue;
                 
                 userInfoContainer.style.display = 'none';
                 quizContainer.style.display = 'block';
 
-                // Bắt đầu đếm ngược
                 startTimer();
             });
             
