@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ÔN TẬP TRẮC NGHIỆM TIN 11 - BÀI 3 (HỆ ĐIỀU HÀNH)</title>
+    <title>KIỂM TRA 15P - BÀI 3</title>
     <style>
         /* CSS được tinh chỉnh để bài quiz hiển thị độc lập */
         body {
@@ -22,7 +22,7 @@
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
-        /* CSS cho Form Thông tin Thí sinh (Đã loại bỏ Trường) */
+        /* CSS cho Form Thông tin Học sinh */
         #userInfoFormContainer { padding: 30px; }
         #userInfoForm .form-group { margin-bottom: 20px; }
         #userInfoForm label {
@@ -199,14 +199,13 @@
         const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc09y40H6BEgtLqI3R1Q04F8kljeqHX4Bij1G7sIlqk_Fmw5A/formResponse";
         
         // Entry ID của các trường nhập liệu trong Form của bạn
-        const ENTRY_ID_NAME = "entry.699633454";   // Dùng trường này để lưu Họ và Tên
-        const ENTRY_ID_CLASS = "entry.371774655";  // Dùng trường này để lưu Lớp
-        const ENTRY_ID_SCORE = "entry.46168601";   // Dùng trường này để lưu Điểm số
+        const ENTRY_ID_NAME = "entry.699633454";   // Dùng trường Trường (entry.699633454) để lưu Họ và Tên
+        const ENTRY_ID_CLASS = "entry.371774655";  // Dùng trường Lớp (entry.371774655) để lưu Lớp
+        const ENTRY_ID_SCORE = "entry.46168601";   // Dùng trường Điểm (entry.46168601) để lưu Điểm số
 
-        // --- KHỐI DỮ LIỆU CÂU HỎI (Đã đổi sang Bài 3) ---
+        // --- KHỐI DỮ LIỆU CÂU HỎI (Bài 3) ---
         const quizData = {
             part1: [
-                // --- PHẦN I: TRẮC NGHIỆM ĐƠN (12 CÂU) ---
                 { id: "q1", question: "Phần mềm được chuyển giao dưới dạng mã máy, khó đọc hiểu và nhằm mục đích bảo vệ chống đánh cắp ý tưởng được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm nguồn đóng", "Phần mềm tự do", "Phần mềm chạy trên Internet"], answer: "Phần mềm nguồn đóng", explanation: "Tài liệu định nghĩa: \"Phần mềm chuyển giao dưới dạng mã máy thường được gọi là phần mềm nguồn đóng\"." },
                 { id: "q2", question: "Theo tài liệu, ví dụ nào sau đây là một phần mềm nguồn mở?", options: ["Microsoft Word", "Photoshop", "Linux", "Acrobat Pro DC"], answer: "Linux", explanation: "Bảng 3.1 liệt kê Linux là phần mềm nguồn mở có chức năng tương đương hệ điều hành thương mại Windows." },
                 { id: "q3", question: "Loại giấy phép phần mềm nguồn mở nào được áp dụng rộng rãi nhất theo nội dung bài học?", options: ["Giấy phép công cộng GNU GPL", "Giấy phép Microsoft", "Giấy phép Adobe", "Giấy phép thương mại"], answer: "Giấy phép công cộng GNU GPL", explanation: "Tài liệu nêu rõ: \"Có nhiều loại giấy phép phần mềm nguồn mở, trong đó giấy phép công cộng GNU GPL (GNU General Public License) được áp dụng rộng rãi nhất\"." },
@@ -221,7 +220,6 @@
                 { id: "q12", question: "Một công ty taxi muốn phát triển một ứng dụng di động cho phép khách hàng đặt xe, theo dõi vị trí xe và thanh toán trực tuyến. Họ cần ứng dụng phải có logo, màu sắc và các tính năng đặc thù của riêng công ty. Họ nên chọn giải pháp phần mềm nào?", options: ["Sử dụng một phần mềm nguồn mở có sẵn.", "Tìm một phần mềm tự do trên mạng.", "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", "Sử dụng Google Sheets để quản lí việc đặt xe."], answer: "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", explanation: "Các yêu cầu về tính năng đặc thù, thương hiệu riêng và sự chính xác cao là đặc điểm của phần mềm \"đặt hàng\", được thiết kế riêng theo yêu cầu của khách hàng." }
             ],
             part2: [
-                // --- PHẦN II: TRẮC NGHIỆM ĐÚNG/SAI (4 CÂU) ---
                 { id: "q13", question: "Một nhiếp ảnh gia tự do đang tìm kiếm một phần mềm chỉnh sửa ảnh. Anh ấy cân nhắc giữa việc trả phí hàng tháng để sử dụng Adobe Photoshop hoặc tải miễn phí phần mềm GIMP. Cả hai đều có những tính năng mạnh mẽ nhưng cách thức hoạt động và hỗ trợ lại khác nhau.", sub_questions: [
                     { id: "a", text: "Theo bảng phân loại trong tài liệu, Adobe Photoshop là một ví dụ về phần mềm thương mại.", answer: "true", explanation: "Bảng 3.1 liệt kê Photoshop là phần mềm thương mại trong lĩnh vực xử lí ảnh." },
                     { id: "b", text: "GIMP là một phần mềm nguồn mở, có nghĩa là nhiếp ảnh gia được cung cấp cả mã nguồn của nó.", answer: "true", explanation: "GIMP được liệt kê là phần mềm nguồn mở thay thế cho Photoshop, và định nghĩa phần mềm nguồn mở là được cung cấp cả mã nguồn." },
@@ -348,7 +346,7 @@
             const resultDetails = document.getElementById('resultDetails');
             const scoreElement = document.getElementById('score');
             
-            // Lấy thông tin người dùng cho phần hiển thị kết quả
+            // Lấy thông tin người dùng cho phần hiển thị kết quả (CHỈ HIỂN THỊ TÊN, LỚP)
             const studentInfoResults = document.getElementById('studentInfoResults');
             studentInfoResults.innerHTML = `
                 <p><b>Họ và Tên:</b> ${studentName}</p>
@@ -360,7 +358,7 @@
             resultSection.style.display = 'block';
             document.querySelector('.submit-btn').style.display = 'none';
 
-            // --- PHẦN CHẤM ĐIỂM VÀ LƯU ĐIỂM ---
+            // --- PHẦN CHẤM ĐIỂM VÀ TÍNH ĐIỂM ---
             
             // Tính tổng điểm
             shuffledPart1Data.forEach((q, index) => {
@@ -375,7 +373,7 @@
 
             shuffledPart2Data.forEach((q, index) => {
                 let correctCount = 0;
-                // ... (Logic tính correctCount)
+                // ... (Code tính correctCount)
                 const questionScore = getQuestionScore(correctCount);
                 score += questionScore;
                 // ... (Code hiển thị kết quả chi tiết)
@@ -386,13 +384,17 @@
             scoreElement.innerHTML = `<h2>Tổng điểm toàn bài là: ${finalScore}/10</h2>`;
 
 
-            // --- BẮT ĐẦU GỬI DỮ LIỆU ĐẾN GOOGLE FORM (Sử dụng iframe) ---
+            // --- GỬI DỮ LIỆU ĐẾN GOOGLE FORM ---
             
-            // Gửi dữ liệu Tên, Lớp, Điểm
+            // Lấy Tên và Lớp (vì Trường không được nhập)
+            const studentNameValue = document.getElementById('studentName').value;
+            const studentClassValue = document.getElementById('studentClass').value;
+            
+            // Tạo chuỗi truy vấn (Query String) thủ công, mã hóa dữ liệu
             const queryString = 
-                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentName)}` + 
-                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClass)}` + 
-                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`; 
+                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentNameValue)}` + // Gửi Họ và Tên vào trường 'entry.699633454' (Trường)
+                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClassValue)}` + // Gửi Lớp vào trường 'entry.371774655' (Lớp)
+                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`; // Gửi Điểm số vào trường 'entry.46168601' (Điểm)
 
             const fullUrl = GOOGLE_FORM_ACTION_URL + '?' + queryString;
             
@@ -420,9 +422,36 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             buildQuiz();
-            // ... (Phần khởi tạo sự kiện)
+
+            const startBtn = document.getElementById('startBtn');
+            const userInfoContainer = document.getElementById('userInfoFormContainer');
+            const quizContainer = document.getElementById('quizContainer');
+
+            startBtn.addEventListener('click', function() {
+                // Lấy giá trị trực tiếp từ input fields
+                const nameValue = document.getElementById('studentName').value.trim();
+                const classValue = document.getElementById('studentClass').value.trim();
+                
+                // Cập nhật biến toàn cục
+                studentName = nameValue;
+                // Gán giá trị mặc định cho trường bị ẩn (để tránh lỗi kiểm tra)
+                studentSchool = document.getElementById('studentSchool').value; 
+                studentClass = classValue;
+                
+                // ĐÃ SỬA: Chỉ kiểm tra Tên và Lớp (vì Trường là hidden)
+                if (!nameValue || !classValue) { 
+                    alert('Vui lòng điền đầy đủ Họ và Tên, và Lớp!');
+                    return; 
+                }
+                
+                userInfoContainer.style.display = 'none';
+                quizContainer.style.display = 'block';
+
+                startTimer();
+            });
+            
+            document.getElementById('quizForm').addEventListener('submit', submitQuiz);
         });
-        
     </script>
 </body>
 </html>
