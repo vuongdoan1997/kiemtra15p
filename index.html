@@ -1,440 +1,251 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KIỂM TRA 15P - BÀI 3</title>
-    <style>
-        /* CSS được tinh chỉnh để bài quiz hiển thị độc lập */
-        body {
-            font-family: cambria, Arial, sans-serif;
-            font-size: 14pt;
-            line-height: 1.3;
-            padding: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            max-width: 900px; 
-            margin: auto;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        }
-        /* CSS cho Form Thông tin Học sinh */
-        #userInfoFormContainer { padding: 30px; }
-        #userInfoForm .form-group { margin-bottom: 20px; }
-        #userInfoForm label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #0056b3;
-        }
-        #userInfoForm input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14pt;
-            font-family: cambria;
-        }
-        #userInfoForm .start-btn {
-            display: block;
-            width: 220px;
-            padding: 12px;
-            font-size: 16px;
-            font-family: cambria;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 20px auto 0;
-            transition: background-color 0.3s;
-        }
-        #userInfoForm .start-btn:hover { background-color: #218838; }
-        
-        /* CSS chung cho bài Quiz */
-        h1 { color: #0056b3; text-align: center; margin-top: 5px; margin-bottom: 0px; }
-        h2 { color: #0056b3; text-align: center; margin-top: 0px; margin-bottom: 20px; }
-        .timer {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: #F2F2F2;
-            padding: 10px 15px;
-            border-bottom: 4px solid #d9534f;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: red;
-            margin: -10px -10px 20px -10px;
-            border-radius: 8px 8px 0 0;
-        }
-        .question {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .question p { font-weight: bold; margin-bottom: 10px; margin-top: 0px; }
-        .options-container { display: grid; gap: 5px; }
-        .option-label {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .option-label:hover { background-color: #e9e9e9; }
-        .option-label input { margin-right: 10px; }
-        .submit-btn {
-            display: block;
-            width: 220px;
-            padding: 10px;
-            font-size: 16px;
-            font-family: cambria;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px auto 0;
-            transition: background-color 0.3s;
-        }
-        .submit-btn:hover { background-color: #0056b3; }
-        
-        /* CSS cho phần Kết quả */
-        .results { margin-top: 30px; border-top: 2px solid #333; padding-top: 20px; display: none; }
-        #studentInfoResults {
-            font-size: 16pt;
-            padding: 1px 15px;
-            background-color: #eaf2f9;
-            border-left: 5px solid #007BFF;
-            margin-bottom: 20px;
-        }
-        .result-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-left: 5px solid;
-            background-color: #fafafa;
-        }
-        .result-item.correct { border-left-color: #28a745; }
-        .result-item.incorrect { border-left-color: #dc3545; }
-        .explanation {
-            font-style: italic;
-            color: #555;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #eaf2f9;
-            border-radius: 4px;
-        }
-        .correct-answer-text { font-weight: bold; color: #28a745; }
-        .your-answer-text { font-weight: bold; color: #dc3545; }
-        .true-false-container { margin-top: 15px; }
-        .true-false-container .option-label { display: inline-flex; width: auto; margin-right: 10px; }
-        .true-false-container .sub-question-text { font-weight: normal; }
-        .option-label.correct { background-color: #d4edda; border-color: #c3e6cb; }
-        .option-label.incorrect { background-color: #f8d7da; border-color: #f5c6cb; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div id="userInfoFormContainer">
-            <h1>THÔNG TIN HỌC SINH</h1>
-            <h2>Vui lòng điền đầy đủ thông tin bên dưới</h2>
-            <div id="userInfoForm">
-                <div class="form-group">
-                    <label for="studentName">Họ và Tên:</label>
-                    <input type="text" id="studentName" name="studentName" required>
-                </div>
-                <input type="hidden" id="studentSchool" name="studentSchool" value="KHÔNG_SỬ_DỤNG">
-                
-                <div class="form-group">
-                    <label for="studentClass">Lớp:</label>
-                    <input type="text" id="studentClass" name="studentClass" required>
-                </div>
-                <button type="button" id="startBtn" class="start-btn"><b>Bắt đầu làm bài</b></button>
-            </div>
-        </div>
+// --- CẤU HÌNH GOOGLE FORM CỦA BẠN ---
+const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc09y40H6BEgtLqI3R1Q04F8kljeqHX4Bij1G7sIlqk_Fmw5A/formResponse";
+const ENTRY_ID_NAME = "entry.699633454";
+const ENTRY_ID_CLASS = "entry.371774655";
+const ENTRY_ID_SCORE = "entry.46168601";
 
-        <div id="quizContainer" style="display:none;">
-            <h1>KIỂM TRA 15P</h1>
-            <h2>Bài 3. PHẦN MỀM NGUỒN MỞ VÀ PHẦN MỀM CHẠY TRÊN INTERNET</h2>
-            
-            <div class="timer">Thời gian còn lại: <span id="countdown">15:00</span></div>
+// --- KHỐI DỮ LIỆU CÂU HỎI (Bài 3) ---
+const quizData = {
+    part1: [
+        { id: "q1", question: "Phần mềm được chuyển giao dưới dạng mã máy, khó đọc hiểu và nhằm mục đích bảo vệ chống đánh cắp ý tưởng được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm nguồn đóng", "Phần mềm tự do", "Phần mềm chạy trên Internet"], answer: "Phần mềm nguồn đóng", explanation: "Tài liệu định nghĩa: \"Phần mềm chuyển giao dưới dạng mã máy thường được gọi là phần mềm nguồn đóng\"." },
+        { id: "q2", question: "Theo tài liệu, ví dụ nào sau đây là một phần mềm nguồn mở?", options: ["Microsoft Word", "Photoshop", "Linux", "Acrobat Pro DC"], answer: "Linux", explanation: "Bảng 3.1 liệt kê Linux là phần mềm nguồn mở có chức năng tương đương hệ điều hành thương mại Windows." },
+        { id: "q3", question: "Loại giấy phép phần mềm nguồn mở nào được áp dụng rộng rãi nhất theo nội dung bài học?", options: ["Giấy phép công cộng GNU GPL", "Giấy phép Microsoft", "Giấy phép Adobe", "Giấy phép thương mại"], answer: "Giấy phép công cộng GNU GPL", explanation: "Tài liệu nêu rõ: \"Có nhiều loại giấy phép phần mềm nguồn mở, trong đó giấy phép công cộng GNU GPL (GNU General Public License) được áp dụng rộng rãi nhất\"." },
+        { id: "q4", question: "Phần mềm nào sau đây được định nghĩa là phần mềm cho phép sử dụng qua Internet mà không cần cài đặt vào máy?", options: ["Phần mềm đặt hàng", "Phần mềm đóng gói", "Phần mềm chạy trên Internet", "Phần mềm nguồn đóng"], answer: "Phần mềm chạy trên Internet", explanation: "Định nghĩa trong bài: \"Phần mềm chạy trên Internet được hiểu là phần mềm cho phép sử dụng qua Internet mà không cần phải cài đặt vào máy\"." },
+        { id: "q5", question: "Phần mềm được thiết kế theo yêu cầu của từng khách hàng riêng biệt được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm đóng gói", "Phần mềm đặt hàng", "Phần mềm tự do"], answer: "Phần mềm đặt hàng", explanation: "Tài liệu định nghĩa: \"Phần mềm \"đặt hàng\" (phần mềm \"may-đo\") được thiết kế theo yêu cầu của từng khách hàng\"." },
+        { id: "q6", question: "Đâu là sự khác biệt cơ bản nhất giữa phần mềm tự do (như Acrobat Reader) và phần mềm nguồn mở (như GIMP)?", options: ["Phần mềm tự do luôn có phí, còn phần mềm nguồn mở thì miễn phí.", "Phần mềm tự do không cho phép sao chép, còn phần mềm nguồn mở thì có.", "Phần mềm nguồn mở cung cấp cả mã nguồn để người dùng có thể sửa đổi, trong khi phần mềm tự do có thể không cung cấp mã nguồn.", "Phần mềm tự do chỉ chạy trên Windows, còn phần mềm nguồn mở chạy trên Linux."], answer: "Phần mềm nguồn mở cung cấp cả mã nguồn để người dùng có thể sửa đổi, trong khi phần mềm tự do có thể không cung cấp mã nguồn.", explanation: "Tài liệu định nghĩa phần mềm nguồn mở là \"được cung cấp cả mã nguồn\", trong khi phần mềm tự do \"có thể ở dạng mã máy hoặc mã nguồn\", ví dụ Acrobat Reader là dạng mã máy." },
+        { id: "q7", question: "Theo giấy phép GNU GPL, nếu bạn sửa đổi một phần mềm nguồn mở và phân phối lại phiên bản đã sửa đổi đó, bạn có nghĩa vụ gì?", options: ["Phải trả tiền bản quyền cho tác giả gốc.", "Phải giữ kín mã nguồn của phần sửa đổi để bán.", "Phải công bố mã nguồn phần sửa đổi và áp dụng giấy phép GNU GPL cho nó.", "Phải đổi tên phần mềm thành một tên hoàn toàn mới."], answer: "Phải công bố mã nguồn phần sửa đổi và áp dụng giấy phép GNU GPL cho nó.", explanation: "Giấy phép GNU GPL quy định rõ: \"phải công bố mã nguồn phần sửa đổi... đồng thời phải áp dụng giấy phép GNU GPL cho chính phần thay đổi đó\"." },
+        { id: "q8", question: "Tại sao phần mềm nguồn mở không thể thay thế hoàn toàn được phần mềm thương mại?", options: ["Vì phần mềm nguồn mở luôn có nhiều lỗi hơn.", "Vì phần mềm thương mại mới có thể đáp ứng các nhu cầu riêng, đặc thù của từng khách hàng (phần mềm đặt hàng) và có sự bảo hành, hỗ trợ kĩ thuật chính thức.", "Vì phần mềm nguồn mở không được phép sử dụng trong các công ty lớn.", "Vì phần mềm thương mại luôn có chi phí rẻ hơn."], answer: "Vì phần mềm thương mại mới có thể đáp ứng các nhu cầu riêng, đặc thù của từng khách hàng (phần mềm đặt hàng) và có sự bảo hành, hỗ trợ kĩ thuật chính thức.", explanation: "Tài liệu giải thích rằng những nhu cầu riêng thì phần mềm \"đặt hàng\" mới có thể đáp ứng được, và nó còn được bảo hành theo hợp đồng." },
+        { id: "q9", question: "Ưu điểm chính về tính minh bạch của phần mềm nguồn mở so với phần mềm nguồn đóng là gì?", options: ["Giao diện của phần mềm nguồn mở luôn đẹp hơn.", "Người dùng có thể kiểm soát được mã nguồn để biết chính xác phần mềm làm gì, tránh các cài cắm không mong muốn.", "Phần mềm nguồn mở luôn được cập nhật thường xuyên hơn.", "Tài liệu hướng dẫn của phần mềm nguồn mở luôn chi tiết hơn."], answer: "Người dùng có thể kiểm soát được mã nguồn để biết chính xác phần mềm làm gì, tránh các cài cắm không mong muốn.", explanation: "Bảng 3.2 so sánh chỉ ra rằng với phần mềm nguồn mở, người dùng \"Có thể kiểm soát được mã nguồn\", trong khi phần mềm nguồn đóng thì \"Khó kiểm soát những gì được cài cắm bên trong\"." },
+        { id: "q10", question: "Một trường học muốn trang bị bộ phần mềm văn phòng cho tất cả các máy tính nhưng có ngân sách rất hạn hẹp. Lựa chọn nào sau đây là phù hợp nhất với họ dựa trên các thông tin trong bài?", options: ["Mua bản quyền Microsoft Office (Word, Excel, PowerPoint) cho tất cả các máy.", "Sử dụng bộ phần mềm OpenOffice (Writer, Calc, Impress).", "Yêu cầu một công ty viết riêng một bộ phần mềm văn phòng đặt hàng.", "Sử dụng phần mềm chỉnh sửa ảnh Photoshop cho công việc văn phòng."], answer: "Sử dụng bộ phần mềm OpenOffice (Writer, Calc, Impress).", explanation: "OpenOffice là phần mềm nguồn mở, có chức năng tương tự Microsoft Office nhưng chi phí thấp (thường là miễn phí), phù hợp với các tổ chức có ngân sách hạn hẹp muốn có giải pháp phần mềm tốt." },
+        { id: "q11", question: "Một nhóm sinh viên ở các thành phố khác nhau cần cùng nhau làm một bài trình chiếu. Phương án nào hiệu quả nhất để họ có thể làm việc chung mà không cần gửi tệp qua lại liên tục?", options: ["Một người làm toàn bộ rồi gửi cho những người còn lại.", "Tất cả cùng cài đặt phần mềm PowerPoint và gửi tệp cho nhau qua email sau mỗi lần chỉnh sửa.", "Sử dụng một phần mềm chạy trên Internet như Google Slides.", "Sử dụng phần mềm GIMP để thiết kế bài trình chiếu."], answer: "Sử dụng một phần mềm chạy trên Internet như Google Slides.", explanation: "Phần mềm chạy trên Internet như Google Slides cho phép nhiều người làm việc cùng lúc trên một tài liệu từ bất cứ đâu, miễn là có kết nối mạng. Đây là giải pháp tối ưu cho việc cộng tác từ xa." },
+        { id: "q12", question: "Một công ty taxi muốn phát triển một ứng dụng di động cho phép khách hàng đặt xe, theo dõi vị trí xe và thanh toán trực tuyến. Họ cần ứng dụng phải có logo, màu sắc và các tính năng đặc thù của riêng công ty. Họ nên chọn giải pháp phần mềm nào?", options: ["Sử dụng một phần mềm nguồn mở có sẵn.", "Tìm một phần mềm tự do trên mạng.", "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", "Sử dụng Google Sheets để quản lí việc đặt xe."], answer: "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", explanation: "Các yêu cầu về tính năng đặc thù, thương hiệu riêng và sự chính xác cao là đặc điểm của phần mềm \"đặt hàng\", được thiết kế riêng theo yêu cầu của khách hàng." }
+    ],
+    part2: [
+        { id: "q13", question: "Một nhiếp ảnh gia tự do đang tìm kiếm một phần mềm chỉnh sửa ảnh. Anh ấy cân nhắc giữa việc trả phí hàng tháng để sử dụng Adobe Photoshop hoặc tải miễn phí phần mềm GIMP. Cả hai đều có những tính năng mạnh mẽ nhưng cách thức hoạt động và hỗ trợ lại khác nhau.", sub_questions: [
+            { id: "a", text: "Theo bảng phân loại trong tài liệu, Adobe Photoshop là một ví dụ về phần mềm thương mại.", answer: "true", explanation: "Bảng 3.1 liệt kê Photoshop là phần mềm thương mại trong lĩnh vực xử lí ảnh." },
+            { id: "b", text: "GIMP là một phần mềm nguồn mở, có nghĩa là nhiếp ảnh gia được cung cấp cả mã nguồn của nó.", answer: "true", explanation: "GIMP được liệt kê là phần mềm nguồn mở thay thế cho Photoshop, và định nghĩa phần mềm nguồn mở là được cung cấp cả mã nguồn." },
+            { id: "c", text: "Ưu điểm chính khi nhiếp ảnh gia chọn GIMP là chi phí thấp, nhưng anh ấy sẽ không nhận được hỗ trợ kĩ thuật chính thức từ nhà sản xuất mà phải dựa vào cộng đồng người dùng.", answer: "true", explanation: "Bảng so sánh 3.2 cho thấy phần mềm nguồn mở có chi phí thấp nhưng hỗ trợ kĩ thuật đến từ cộng đồng, không phải từ nhà cung cấp chính thức." },
+            { id: "d", text: "Nếu nhiếp ảnh gia này cũng là một lập trình viên, anh ấy có quyền hợp pháp để sửa đổi mã nguồn của Photoshop để thêm tính năng mới cho riêng mình.", answer: "false", explanation: "Photoshop là phần mềm nguồn đóng, người dùng không được cung cấp mã nguồn và không có quyền sửa đổi nó. Chỉ phần mềm nguồn mở như GIMP mới cho phép điều này." }
+        ]},
+        { id: "q14", question: "Một nhóm lập trình viên xây dựng một trình duyệt web mới và quyết định phát hành nó dưới dạng phần mềm nguồn mở theo giấy phép GNU GPL. Họ công bố toàn bộ mã nguồn lên mạng và cho phép bất kỳ ai cũng có thể tải về, sử dụng và cải tiến sản phẩm.", sub_questions: [
+            { id: "a", text: "Vì cung cấp cả mã nguồn nên trình duyệt web này được gọi là phần mềm nguồn mở.", answer: "true", explanation: "Định nghĩa phần mềm nguồn mở là phần mềm được cung cấp cả mã nguồn để người dùng có thể sửa đổi, cải tiến." },
+            { id: "b", text: "Nhóm lập trình viên này không được quyền yêu cầu trả phí cho việc chuyển giao (ví dụ: phí tải về) trình duyệt này.", answer: "false", explanation: "Giấy phép GNU GPL cho phép \"có quyền yêu cầu trả phí cho việc chuyển giao đó\" miễn là thông báo rõ ràng về bản quyền và miễn trừ bảo hành." },
+            { id: "c", text: "Nếu một công ty khác lấy mã nguồn của trình duyệt này, thêm vào một số tính năng và bán ra thị trường, họ bắt buộc phải công khai mã nguồn của những tính năng mới đó theo giấy phép GNU GPL.", answer: "true", explanation: "Đây là một quy định cốt lõi của GPL: \"phần mềm có nguồn gốc từ việc sửa đổi một phần mềm nguồn mở theo GPL cũng phải là phần mềm nguồn mở theo GPL\"." },
+            { id: "d", text: "Theo giấy phép GNU GPL, nhóm tác giả ban đầu sẽ phải chịu trách nhiệm pháp lí và bồi thường nếu trình duyệt của họ gây ra lỗi làm mất dữ liệu của người dùng.", answer: "false", explanation: "Giấy phép GNU GPL có điều khoản \"miễn trừ trách nhiệm bảo hành\", giúp các tác giả không bị kiện vì những sai sót của phần mềm." }
+        ]},
+        { id: "q15", question: "Một công ty cho phép nhân viên làm việc từ xa. Thay vì cài đặt phần mềm Microsoft Office lên máy tính cá nhân của từng người, công ty yêu cầu nhân viên sử dụng bộ ứng dụng của Google (Docs, Sheets, Slides) thông qua trình duyệt web để soạn thảo văn bản, làm bảng tính và tạo bài trình chiếu.", sub_questions: [
+            { id: "a", text: "Các ứng dụng Google Docs, Sheets, và Slides là ví dụ về phần mềm chạy trên Internet.", answer: "true", explanation: "Tài liệu đã nêu rõ Google Docs, Sheets, Slides là các ví dụ về phần mềm trực tuyến (chạy trên Internet)." },
+            { id: "b", text: "Một ưu điểm lớn của giải pháp này là nhân viên có thể truy cập và làm việc trên cùng một tài liệu từ bất kỳ máy tính nào, miễn là có kết nối Internet.", answer: "true", explanation: "Lợi ích của phần mềm chạy trên Internet là \"có thể sử dụng ở bất cứ đâu, bất cứ nơi nào, bất cứ máy tính nào miễn là có kết nối Internet\"." },
+            { id: "c", text: "Khi nhân viên tạo một tài liệu mới bằng Google Docs, tài liệu đó sẽ được tự động lưu trữ trên không gian đám mây của Google thay vì trên ổ cứng máy tính cá nhân.", answer: "true", explanation: "Tài liệu mô tả rằng khi dùng Google Docs, \"Văn bản được lưu tự động trên không gian lưu trữ của em trên đám mây của Google\"." },
+            { id: "d", text: "Vì các ứng dụng của Google là miễn phí và có thể thay thế cho Microsoft Office, chúng cũng được coi là phần mềm nguồn mở theo giấy phép GNU GPL.", answer: "false", explanation: "Mặc dù miễn phí và chạy trên Internet, Google Docs không phải là phần mềm nguồn mở. Google không công bố mã nguồn của chúng để người dùng tự do sửa đổi và phân phối lại theo giấy phép GPL." }
+        ]},
+        { id: "q16", question: "Một ngân hàng cần một hệ thống phần mềm ATM (rút tiền tự động) để quản lí các giao dịch. Hệ thống này phải kết nối liên tục với cơ sở dữ liệu trung tâm của ngân hàng để kiểm tra số dư và cập nhật giao dịch theo thời gian thực. An ninh và độ tin cậy là những yêu cầu quan trọng hàng đầu.", sub_questions: [
+            { id: "a", text: "Phần mềm tại các trạm ATM là một ví dụ về phần mềm thương mại dạng \"đặt hàng\".", answer: "true", explanation: "Đây là loại phần mềm được thiết kế riêng cho một khách hàng (ngân hàng) với yêu cầu đặc thù, độ tin cậy và bảo hành cao." },
+            { id: "b", text: "Hệ thống này yêu cầu kết nối mạng liên tục, do đó nó có đặc điểm của một phần mềm trực tuyến.", answer: "true", explanation: "Câu hỏi Luyện tập số 2 (trang 20) ngụ ý phần mềm ATM là phần mềm trực tuyến vì nó cần kết nối liên tục để thực hiện giao dịch, tương tự định nghĩa phần mềm chạy trên Internet." },
+            { id: "c", text: "Ngân hàng sẽ không chọn một phần mềm nguồn mở cho hệ thống ATM vì khó có thể tìm thấy một giải pháp đáp ứng chính xác các yêu cầu an ninh và quy trình nghiệp vụ riêng của họ, cũng như thiếu sự hỗ trợ kĩ thuật và bảo hành chính thức.", answer: "true", explanation: "Phần mềm nguồn mở đáp ứng nhu cầu chung, trong khi nhu cầu riêng, yêu cầu bảo hành, hỗ trợ kĩ thuật là ưu điểm của phần mềm thương mại, đặc biệt là phần mềm đặt hàng." },
+            { id: "d", text: "Nếu ngân hàng sử dụng phần mềm này, họ sẽ bị phụ thuộc hoàn toàn vào nhà cung cấp về giải pháp và hỗ trợ kĩ thuật.", answer: "true", explanation: "Bảng 3.2 chỉ ra một đặc điểm của phần mềm thương mại là người dùng \"Bị phụ thuộc vào nhà cung cấp về giải pháp và hỗ trợ kĩ thuật\"." }
+        ]}
+    ]
+};
 
-            <form id="quizForm">
-                
-                <div style="background-color: azure; color: green; padding: 5px; text-align: justify;">
-                    <b>PHẦN I. Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu thí sinh chỉ chọn một phương án.</b>
-                </div>
-                <div id="part1-questions"></div>
-                
-                <div style="background-color: azure; color: green; padding: 5px; text-align: justify;">
-                    <b>PHẦN II. Thí sinh trả lời từ câu 13 đến câu 16. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai</b>
-                </div>
-                <div id="part2-questions"></div>
+// --- FIX: Khai báo các biến cần thiết ở phạm vi toàn cục ---
+let shuffledPart1Data, shuffledPart2Data;
+let timerInterval;
+let timeLeft = 15 * 60; // 15 phút, gán giá trị ngay từ đầu
+let studentName = '';
+let studentClass = '';
 
-                <button type="submit" class="submit-btn"><b>Nộp bài và xem kết quả</b></button>
-            </form>
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
-            <div class="results" id="results">
-                <h2>THÔNG TIN BÀI LÀM CỦA BẠN</h2>
-                <div id="studentInfoResults"></div> 
-                <div id="score"></div>
-                <div id="resultDetails"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- CẤU HÌNH GOOGLE FORM CỦA BẠN ---
-        const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc09y40H6BEgtLqI3R1Q04F8kljeqHX4Bij1G7sIlqk_Fmw5A/formResponse";
-        const ENTRY_ID_NAME = "entry.699633454";
-        const ENTRY_ID_CLASS = "entry.371774655";
-        const ENTRY_ID_SCORE = "entry.46168601";
-
-        // --- KHỐI DỮ LIỆU CÂU HỎI (Bài 3) ---
-        const quizData = {
-            part1: [
-                { id: "q1", question: "Phần mềm được chuyển giao dưới dạng mã máy, khó đọc hiểu và nhằm mục đích bảo vệ chống đánh cắp ý tưởng được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm nguồn đóng", "Phần mềm tự do", "Phần mềm chạy trên Internet"], answer: "Phần mềm nguồn đóng", explanation: "Tài liệu định nghĩa: \"Phần mềm chuyển giao dưới dạng mã máy thường được gọi là phần mềm nguồn đóng\"." },
-                { id: "q2", question: "Theo tài liệu, ví dụ nào sau đây là một phần mềm nguồn mở?", options: ["Microsoft Word", "Photoshop", "Linux", "Acrobat Pro DC"], answer: "Linux", explanation: "Bảng 3.1 liệt kê Linux là phần mềm nguồn mở có chức năng tương đương hệ điều hành thương mại Windows." },
-                { id: "q3", question: "Loại giấy phép phần mềm nguồn mở nào được áp dụng rộng rãi nhất theo nội dung bài học?", options: ["Giấy phép công cộng GNU GPL", "Giấy phép Microsoft", "Giấy phép Adobe", "Giấy phép thương mại"], answer: "Giấy phép công cộng GNU GPL", explanation: "Tài liệu nêu rõ: \"Có nhiều loại giấy phép phần mềm nguồn mở, trong đó giấy phép công cộng GNU GPL (GNU General Public License) được áp dụng rộng rãi nhất\"." },
-                { id: "q4", question: "Phần mềm nào sau đây được định nghĩa là phần mềm cho phép sử dụng qua Internet mà không cần cài đặt vào máy?", options: ["Phần mềm đặt hàng", "Phần mềm đóng gói", "Phần mềm chạy trên Internet", "Phần mềm nguồn đóng"], answer: "Phần mềm chạy trên Internet", explanation: "Định nghĩa trong bài: \"Phần mềm chạy trên Internet được hiểu là phần mềm cho phép sử dụng qua Internet mà không cần phải cài đặt vào máy\"." },
-                { id: "q5", question: "Phần mềm được thiết kế theo yêu cầu của từng khách hàng riêng biệt được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm đóng gói", "Phần mềm đặt hàng", "Phần mềm tự do"], answer: "Phần mềm đặt hàng", explanation: "Tài liệu định nghĩa: \"Phần mềm \"đặt hàng\" (phần mềm \"may-đo\") được thiết kế theo yêu cầu của từng khách hàng\"." },
-                { id: "q6", question: "Đâu là sự khác biệt cơ bản nhất giữa phần mềm tự do (như Acrobat Reader) và phần mềm nguồn mở (như GIMP)?", options: ["Phần mềm tự do luôn có phí, còn phần mềm nguồn mở thì miễn phí.", "Phần mềm tự do không cho phép sao chép, còn phần mềm nguồn mở thì có.", "Phần mềm nguồn mở cung cấp cả mã nguồn để người dùng có thể sửa đổi, trong khi phần mềm tự do có thể không cung cấp mã nguồn.", "Phần mềm tự do chỉ chạy trên Windows, còn phần mềm nguồn mở chạy trên Linux."], answer: "Phần mềm nguồn mở cung cấp cả mã nguồn để người dùng có thể sửa đổi, trong khi phần mềm tự do có thể không cung cấp mã nguồn.", explanation: "Tài liệu định nghĩa phần mềm nguồn mở là \"được cung cấp cả mã nguồn\", trong khi phần mềm tự do \"có thể ở dạng mã máy hoặc mã nguồn\", ví dụ Acrobat Reader là dạng mã máy." },
-                { id: "q7", question: "Theo giấy phép GNU GPL, nếu bạn sửa đổi một phần mềm nguồn mở và phân phối lại phiên bản đã sửa đổi đó, bạn có nghĩa vụ gì?", options: ["Phải trả tiền bản quyền cho tác giả gốc.", "Phải giữ kín mã nguồn của phần sửa đổi để bán.", "Phải công bố mã nguồn phần sửa đổi và áp dụng giấy phép GNU GPL cho nó.", "Phải đổi tên phần mềm thành một tên hoàn toàn mới."], answer: "Phải công bố mã nguồn phần sửa đổi và áp dụng giấy phép GNU GPL cho nó.", explanation: "Giấy phép GNU GPL quy định rõ: \"phải công bố mã nguồn phần sửa đổi... đồng thời phải áp dụng giấy phép GNU GPL cho chính phần thay đổi đó\"." },
-                { id: "q8", question: "Tại sao phần mềm nguồn mở không thể thay thế hoàn toàn được phần mềm thương mại?", options: ["Vì phần mềm nguồn mở luôn có nhiều lỗi hơn.", "Vì phần mềm thương mại mới có thể đáp ứng các nhu cầu riêng, đặc thù của từng khách hàng (phần mềm đặt hàng) và có sự bảo hành, hỗ trợ kĩ thuật chính thức.", "Vì phần mềm nguồn mở không được phép sử dụng trong các công ty lớn.", "Vì phần mềm thương mại luôn có chi phí rẻ hơn."], answer: "Vì phần mềm thương mại mới có thể đáp ứng các nhu cầu riêng, đặc thù của từng khách hàng (phần mềm đặt hàng) và có sự bảo hành, hỗ trợ kĩ thuật chính thức.", explanation: "Tài liệu giải thích rằng những nhu cầu riêng thì phần mềm \"đặt hàng\" mới có thể đáp ứng được, và nó còn được bảo hành theo hợp đồng." },
-                { id: "q9", question: "Ưu điểm chính về tính minh bạch của phần mềm nguồn mở so với phần mềm nguồn đóng là gì?", options: ["Giao diện của phần mềm nguồn mở luôn đẹp hơn.", "Người dùng có thể kiểm soát được mã nguồn để biết chính xác phần mềm làm gì, tránh các cài cắm không mong muốn.", "Phần mềm nguồn mở luôn được cập nhật thường xuyên hơn.", "Tài liệu hướng dẫn của phần mềm nguồn mở luôn chi tiết hơn."], answer: "Người dùng có thể kiểm soát được mã nguồn để biết chính xác phần mềm làm gì, tránh các cài cắm không mong muốn.", explanation: "Bảng 3.2 so sánh chỉ ra rằng với phần mềm nguồn mở, người dùng \"Có thể kiểm soát được mã nguồn\", trong khi phần mềm nguồn đóng thì \"Khó kiểm soát những gì được cài cắm bên trong\"." },
-                { id: "q10", question: "Một trường học muốn trang bị bộ phần mềm văn phòng cho tất cả các máy tính nhưng có ngân sách rất hạn hẹp. Lựa chọn nào sau đây là phù hợp nhất với họ dựa trên các thông tin trong bài?", options: ["Mua bản quyền Microsoft Office (Word, Excel, PowerPoint) cho tất cả các máy.", "Sử dụng bộ phần mềm OpenOffice (Writer, Calc, Impress).", "Yêu cầu một công ty viết riêng một bộ phần mềm văn phòng đặt hàng.", "Sử dụng phần mềm chỉnh sửa ảnh Photoshop cho công việc văn phòng."], answer: "Sử dụng bộ phần mềm OpenOffice (Writer, Calc, Impress).", explanation: "OpenOffice là phần mềm nguồn mở, có chức năng tương tự Microsoft Office nhưng chi phí thấp (thường là miễn phí), phù hợp với các tổ chức có ngân sách hạn hẹp muốn có giải pháp phần mềm tốt." },
-                { id: "q11", question: "Một nhóm sinh viên ở các thành phố khác nhau cần cùng nhau làm một bài trình chiếu. Phương án nào hiệu quả nhất để họ có thể làm việc chung mà không cần gửi tệp qua lại liên tục?", options: ["Một người làm toàn bộ rồi gửi cho những người còn lại.", "Tất cả cùng cài đặt phần mềm PowerPoint và gửi tệp cho nhau qua email sau mỗi lần chỉnh sửa.", "Sử dụng một phần mềm chạy trên Internet như Google Slides.", "Sử dụng phần mềm GIMP để thiết kế bài trình chiếu."], answer: "Sử dụng một phần mềm chạy trên Internet như Google Slides.", explanation: "Phần mềm chạy trên Internet như Google Slides cho phép nhiều người làm việc cùng lúc trên một tài liệu từ bất cứ đâu, miễn là có kết nối mạng. Đây là giải pháp tối ưu cho việc cộng tác từ xa." },
-                { id: "q12", question: "Một công ty taxi muốn phát triển một ứng dụng di động cho phép khách hàng đặt xe, theo dõi vị trí xe và thanh toán trực tuyến. Họ cần ứng dụng phải có logo, màu sắc và các tính năng đặc thù của riêng công ty. Họ nên chọn giải pháp phần mềm nào?", options: ["Sử dụng một phần mềm nguồn mở có sẵn.", "Tìm một phần mềm tự do trên mạng.", "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", "Sử dụng Google Sheets để quản lí việc đặt xe."], answer: "Thuê một công ty phần mềm để phát triển một phần mềm \"đặt hàng\".", explanation: "Các yêu cầu về tính năng đặc thù, thương hiệu riêng và sự chính xác cao là đặc điểm của phần mềm \"đặt hàng\", được thiết kế riêng theo yêu cầu của khách hàng." }
-            ],
-            part2: [
-                { id: "q13", question: "Một nhiếp ảnh gia tự do đang tìm kiếm một phần mềm chỉnh sửa ảnh. Anh ấy cân nhắc giữa việc trả phí hàng tháng để sử dụng Adobe Photoshop hoặc tải miễn phí phần mềm GIMP. Cả hai đều có những tính năng mạnh mẽ nhưng cách thức hoạt động và hỗ trợ lại khác nhau.", sub_questions: [
-                    { id: "a", text: "Theo bảng phân loại trong tài liệu, Adobe Photoshop là một ví dụ về phần mềm thương mại.", answer: "true", explanation: "Bảng 3.1 liệt kê Photoshop là phần mềm thương mại trong lĩnh vực xử lí ảnh." },
-                    { id: "b", text: "GIMP là một phần mềm nguồn mở, có nghĩa là nhiếp ảnh gia được cung cấp cả mã nguồn của nó.", answer: "true", explanation: "GIMP được liệt kê là phần mềm nguồn mở thay thế cho Photoshop, và định nghĩa phần mềm nguồn mở là được cung cấp cả mã nguồn." },
-                    { id: "c", text: "Ưu điểm chính khi nhiếp ảnh gia chọn GIMP là chi phí thấp, nhưng anh ấy sẽ không nhận được hỗ trợ kĩ thuật chính thức từ nhà sản xuất mà phải dựa vào cộng đồng người dùng.", answer: "true", explanation: "Bảng so sánh 3.2 cho thấy phần mềm nguồn mở có chi phí thấp nhưng hỗ trợ kĩ thuật đến từ cộng đồng, không phải từ nhà cung cấp chính thức." },
-                    { id: "d", text: "Nếu nhiếp ảnh gia này cũng là một lập trình viên, anh ấy có quyền hợp pháp để sửa đổi mã nguồn của Photoshop để thêm tính năng mới cho riêng mình.", answer: "false", explanation: "Photoshop là phần mềm nguồn đóng, người dùng không được cung cấp mã nguồn và không có quyền sửa đổi nó. Chỉ phần mềm nguồn mở như GIMP mới cho phép điều này." }
-                ]},
-                { id: "q14", question: "Một nhóm lập trình viên xây dựng một trình duyệt web mới và quyết định phát hành nó dưới dạng phần mềm nguồn mở theo giấy phép GNU GPL. Họ công bố toàn bộ mã nguồn lên mạng và cho phép bất kỳ ai cũng có thể tải về, sử dụng và cải tiến sản phẩm.", sub_questions: [
-                    { id: "a", text: "Vì cung cấp cả mã nguồn nên trình duyệt web này được gọi là phần mềm nguồn mở.", answer: "true", explanation: "Định nghĩa phần mềm nguồn mở là phần mềm được cung cấp cả mã nguồn để người dùng có thể sửa đổi, cải tiến." },
-                    { id: "b", text: "Nhóm lập trình viên này không được quyền yêu cầu trả phí cho việc chuyển giao (ví dụ: phí tải về) trình duyệt này.", answer: "false", explanation: "Giấy phép GNU GPL cho phép \"có quyền yêu cầu trả phí cho việc chuyển giao đó\" miễn là thông báo rõ ràng về bản quyền và miễn trừ bảo hành." },
-                    { id: "c", text: "Nếu một công ty khác lấy mã nguồn của trình duyệt này, thêm vào một số tính năng và bán ra thị trường, họ bắt buộc phải công khai mã nguồn của những tính năng mới đó theo giấy phép GNU GPL.", answer: "true", explanation: "Đây là một quy định cốt lõi của GPL: \"phần mềm có nguồn gốc từ việc sửa đổi một phần mềm nguồn mở theo GPL cũng phải là phần mềm nguồn mở theo GPL\"." },
-                    { id: "d", text: "Theo giấy phép GNU GPL, nhóm tác giả ban đầu sẽ phải chịu trách nhiệm pháp lí và bồi thường nếu trình duyệt của họ gây ra lỗi làm mất dữ liệu của người dùng.", answer: "false", explanation: "Giấy phép GNU GPL có điều khoản \"miễn trừ trách nhiệm bảo hành\", giúp các tác giả không bị kiện vì những sai sót của phần mềm." }
-                ]},
-                { id: "q15", question: "Một công ty cho phép nhân viên làm việc từ xa. Thay vì cài đặt phần mềm Microsoft Office lên máy tính cá nhân của từng người, công ty yêu cầu nhân viên sử dụng bộ ứng dụng của Google (Docs, Sheets, Slides) thông qua trình duyệt web để soạn thảo văn bản, làm bảng tính và tạo bài trình chiếu.", sub_questions: [
-                    { id: "a", text: "Các ứng dụng Google Docs, Sheets, và Slides là ví dụ về phần mềm chạy trên Internet.", answer: "true", explanation: "Tài liệu đã nêu rõ Google Docs, Sheets, Slides là các ví dụ về phần mềm trực tuyến (chạy trên Internet)." },
-                    { id: "b", text: "Một ưu điểm lớn của giải pháp này là nhân viên có thể truy cập và làm việc trên cùng một tài liệu từ bất kỳ máy tính nào, miễn là có kết nối Internet.", answer: "true", explanation: "Lợi ích của phần mềm chạy trên Internet là \"có thể sử dụng ở bất cứ đâu, bất cứ nơi nào, bất cứ máy tính nào miễn là có kết nối Internet\"." },
-                    { id: "c", text: "Khi nhân viên tạo một tài liệu mới bằng Google Docs, tài liệu đó sẽ được tự động lưu trữ trên không gian đám mây của Google thay vì trên ổ cứng máy tính cá nhân.", answer: "true", explanation: "Tài liệu mô tả rằng khi dùng Google Docs, \"Văn bản được lưu tự động trên không gian lưu trữ của em trên đám mây của Google\"." },
-                    { id: "d", text: "Vì các ứng dụng của Google là miễn phí và có thể thay thế cho Microsoft Office, chúng cũng được coi là phần mềm nguồn mở theo giấy phép GNU GPL.", answer: "false", explanation: "Mặc dù miễn phí và chạy trên Internet, Google Docs không phải là phần mềm nguồn mở. Google không công bố mã nguồn của chúng để người dùng tự do sửa đổi và phân phối lại theo giấy phép GPL." }
-                ]},
-                { id: "q16", question: "Một ngân hàng cần một hệ thống phần mềm ATM (rút tiền tự động) để quản lí các giao dịch. Hệ thống này phải kết nối liên tục với cơ sở dữ liệu trung tâm của ngân hàng để kiểm tra số dư và cập nhật giao dịch theo thời gian thực. An ninh và độ tin cậy là những yêu cầu quan trọng hàng đầu.", sub_questions: [
-                    { id: "a", text: "Phần mềm tại các trạm ATM là một ví dụ về phần mềm thương mại dạng \"đặt hàng\".", answer: "true", explanation: "Đây là loại phần mềm được thiết kế riêng cho một khách hàng (ngân hàng) với yêu cầu đặc thù, độ tin cậy và bảo hành cao." },
-                    { id: "b", text: "Hệ thống này yêu cầu kết nối mạng liên tục, do đó nó có đặc điểm của một phần mềm trực tuyến.", answer: "true", explanation: "Câu hỏi Luyện tập số 2 (trang 20) ngụ ý phần mềm ATM là phần mềm trực tuyến vì nó cần kết nối liên tục để thực hiện giao dịch, tương tự định nghĩa phần mềm chạy trên Internet." },
-                    { id: "c", text: "Ngân hàng sẽ không chọn một phần mềm nguồn mở cho hệ thống ATM vì khó có thể tìm thấy một giải pháp đáp ứng chính xác các yêu cầu an ninh và quy trình nghiệp vụ riêng của họ, cũng như thiếu sự hỗ trợ kĩ thuật và bảo hành chính thức.", answer: "true", explanation: "Phần mềm nguồn mở đáp ứng nhu cầu chung, trong khi nhu cầu riêng, yêu cầu bảo hành, hỗ trợ kĩ thuật là ưu điểm của phần mềm thương mại, đặc biệt là phần mềm đặt hàng." },
-                    { id: "d", text: "Nếu ngân hàng sử dụng phần mềm này, họ sẽ bị phụ thuộc hoàn toàn vào nhà cung cấp về giải pháp và hỗ trợ kĩ thuật.", answer: "true", explanation: "Bảng 3.2 chỉ ra một đặc điểm của phần mềm thương mại là người dùng \"Bị phụ thuộc vào nhà cung cấp về giải pháp và hỗ trợ kĩ thuật\"." }
-                ]}
-            ]
-        };
-
-        let shuffledPart1Data, shuffledPart2Data;
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function buildQuiz() {
-            const part1Container = document.getElementById('part1-questions');
-            const part2Container = document.getElementById('part2-questions');
-            
-            let part1Html = '';
-            shuffledPart1Data = shuffle([...quizData.part1]);
-            shuffledPart1Data.forEach((q, index) => {
-                const shuffledOptions = shuffle([...q.options]);
-                const optionsHtml = shuffledOptions.map(opt => {
-                    const escapedOpt = opt.replace(/"/g, '"');
-                    return `
-                        <label class="option-label">
-                            <input type="radio" name="${q.id}" value="${escapedOpt}"> ${opt}
-                        </label>
-                    `;
-                }).join('');
-
-                part1Html += `
-                    <div class="question" id="${q.id}">
-                        <p><strong>Câu ${index + 1}:</strong> ${q.question}</p>
-                        <div class="options-container">${optionsHtml}</div>
-                    </div>
-                `;
-            });
-            part1Container.innerHTML = part1Html;
-            
-            let part2Html = '';
-            shuffledPart2Data = shuffle([...quizData.part2]);
-            shuffledPart2Data.forEach((q, index) => {
-                const subQuestionsHtml = q.sub_questions.map(sub => `
-                    <div class="true-false-container">
-                        <p class="sub-question-text">${sub.id}) ${sub.text}</p>
-                        <label class="option-label"><input type="radio" name="${q.id}_${sub.id}" value="true"> Đúng</label>
-                        <label class="option-label"><input type="radio" name="${q.id}_${sub.id}" value="false"> Sai</label>
-                    </div>
-                `).join('');
-
-                part2Html += `
-                    <div class="question" id="${q.id}">
-                        <p><strong>Câu ${shuffledPart1Data.length + index + 1}:</strong> ${q.question}</p>
-                        ${subQuestionsHtml}
-                    </div>
-                `;
-            });
-            part2Container.innerHTML = part2Html;
-        }
-
-        function startTimer() {
-            const countdownElement = document.getElementById('countdown');
-            // Lỗi đã sửa: Khởi tạo timeLeft bằng giá trị ban đầu (15 phút)
-            if (timeLeft <= 0) { // Đảm bảo khởi tạo nếu chẳng may timeLeft bị reset
-                timeLeft = 15 * 60; 
-            }
-
-            if (!countdownElement) return;
-
-            timerInterval = setInterval(() => {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    submitQuiz(null); // Tự động nộp bài khi hết giờ
-                    return;
-                }
-                
-                timeLeft--; // Giảm thời gian sau khi hiển thị
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
-        
-        function getQuestionScore(correctCount) {
-            switch (correctCount) {
-                case 1: return 0.1;
-                case 2: return 0.25;
-                case 3: return 0.5;
-                case 4: return 1.0;
-                default: return 0.0;
-            }
-        }
-
-        function submitQuiz(event) {
-            if (event) {
-                event.preventDefault();
-            }
-
-            stopTimer();
-            let score = 0;
-            const resultSection = document.getElementById('results');
-            const resultDetails = document.getElementById('resultDetails');
-            const scoreElement = document.getElementById('score');
-            
-            // Lấy thông tin người dùng cho phần hiển thị kết quả (CHỈ HIỂN THỊ TÊN, LỚP, ĐIỂM)
-            const studentInfoResults = document.getElementById('studentInfoResults');
-            studentInfoResults.innerHTML = `
-                <p><b>Họ và Tên:</b> ${studentName}</p>
-                <p><b>Lớp:</b> ${studentClass}</p>
-                <p><b>Điểm:</b> <span id="final-score-display">Đang tính...</span></p> 
+function buildQuiz() {
+    const part1Container = document.getElementById('part1-questions');
+    const part2Container = document.getElementById('part2-questions');
+    
+    let part1Html = '';
+    shuffledPart1Data = shuffle([...quizData.part1]);
+    shuffledPart1Data.forEach((q, index) => {
+        const shuffledOptions = shuffle([...q.options]);
+        const optionsHtml = shuffledOptions.map(opt => {
+            // FIX: Sử dụng &quot; để tránh lỗi HTML khi giá trị có dấu nháy kép
+            const escapedOpt = opt.replace(/"/g, '&quot;'); 
+            return `
+                <label class="option-label">
+                    <input type="radio" name="${q.id}" value="${escapedOpt}"> ${opt}
+                </label>
             `;
+        }).join('');
 
-            resultDetails.innerHTML = '';
-            resultSection.style.display = 'block';
-            document.querySelector('.submit-btn').style.display = 'none';
+        part1Html += `
+            <div class="question" id="${q.id}">
+                <p><strong>Câu ${index + 1}:</strong> ${q.question}</p>
+                <div class="options-container">${optionsHtml}</div>
+            </div>
+        `;
+    });
+    part1Container.innerHTML = part1Html;
+    
+    let part2Html = '';
+    shuffledPart2Data = shuffle([...quizData.part2]);
+    shuffledPart2Data.forEach((q, index) => {
+        const subQuestionsHtml = q.sub_questions.map(sub => `
+            <div class="true-false-container">
+                <p class="sub-question-text">${sub.id}) ${sub.text}</p>
+                <label class="option-label"><input type="radio" name="${q.id}_${sub.id}" value="true"> Đúng</label>
+                <label class="option-label"><input type="radio" name="${q.id}_${sub.id}" value="false"> Sai</label>
+            </div>
+        `).join('');
 
-            // --- PHẦN CHẤM ĐIỂM VÀ TÍNH ĐIỂM ---
-            
-            // Tính tổng điểm (Logic giữ nguyên)
-            // ...
+        part2Html += `
+            <div class="question" id="${q.id}">
+                <p><strong>Câu ${shuffledPart1Data.length + index + 1}:</strong> ${q.question}</p>
+                ${subQuestionsHtml}
+            </div>
+        `;
+    });
+    part2Container.innerHTML = part2Html;
+}
 
-            const finalScore = score.toFixed(2);
-            document.getElementById('final-score-display').textContent = finalScore;
-            scoreElement.innerHTML = `<h2>Tổng điểm toàn bài là: ${finalScore}/10</h2>`;
+function startTimer() {
+    const countdownElement = document.getElementById('countdown');
+    if (!countdownElement) return;
 
-
-            // --- GỬI DỮ LIỆU ĐẾN GOOGLE FORM ---
-            
-            const studentNameValue = document.getElementById('studentName').value.trim();
-            const studentClassValue = document.getElementById('studentClass').value.trim();
-            
-            // Tạo chuỗi truy vấn (Query String) thủ công, mã hóa dữ liệu
-            const queryString = 
-                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentNameValue)}` + // Gửi Họ và Tên
-                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClassValue)}` + // Gửi Lớp
-                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`; // Gửi Điểm số
-
-            const fullUrl = GOOGLE_FORM_ACTION_URL + '?' + queryString;
-            
-            // Kỹ thuật iframe để gửi dữ liệu Form
-            const iframe = document.createElement('iframe');
-            iframe.name = 'hidden_iframe';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.target = 'hidden_iframe'; 
-            form.action = fullUrl;
-            
-            document.body.appendChild(form);
-            form.submit();
-            
-            // --- KẾT THÚC GỬI DỮ LIỆU ---
-
-            document.getElementById('quizForm').querySelectorAll('input').forEach(input => input.disabled = true);
-            resultSection.scrollIntoView({ behavior: 'smooth' });
+    // FIX: Xóa bỏ khối if (timeLeft <=0) không cần thiết vì timeLeft đã được khởi tạo ở trên
+    timerInterval = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("Đã hết giờ làm bài! Hệ thống sẽ tự động nộp bài của bạn.");
+            submitQuiz(null); // Tự động nộp bài khi hết giờ
+            return;
         }
+        
+        timeLeft--;
+    }, 1000);
+}
 
-        document.addEventListener('DOMContentLoaded', () => {
-            buildQuiz();
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+    
+function getQuestionScore(correctCount) {
+    switch (correctCount) {
+        case 1: return 0.1;
+        case 2: return 0.25;
+        case 3: return 0.5;
+        case 4: return 1.0;
+        default: return 0.0;
+    }
+}
 
-            const startBtn = document.getElementById('startBtn');
-            const userInfoContainer = document.getElementById('userInfoFormContainer');
-            const quizContainer = document.getElementById('quizContainer');
+function submitQuiz(event) {
+    if (event) {
+        event.preventDefault();
+        // Thêm một bước xác nhận để tránh nộp bài nhầm
+        if (!confirm('Bạn có chắc chắn muốn nộp bài không?')) {
+            return;
+        }
+    }
 
-            startBtn.addEventListener('click', function() {
-                // Lấy giá trị trực tiếp từ input fields
-                const nameValue = document.getElementById('studentName').value.trim();
-                const classValue = document.getElementById('studentClass').value.trim();
-                
-                // Cập nhật biến toàn cục
-                studentName = nameValue;
-                studentClass = classValue;
-                
-                if (!nameValue || !classValue) { 
-                    alert('Vui lòng điền đầy đủ Họ và Tên, và Lớp!');
-                    return; 
-                }
-                
-                userInfoContainer.style.display = 'none';
-                quizContainer.style.display = 'block';
+    stopTimer();
+    let score = 0; // Khởi tạo điểm
+    const form = document.getElementById('quizForm');
+    const resultSection = document.getElementById('results');
+    const resultDetails = document.getElementById('resultDetails');
+    const scoreElement = document.getElementById('score');
+    
+    const studentInfoResults = document.getElementById('studentInfoResults');
+    studentInfoResults.innerHTML = `
+        <p><b>Họ và Tên:</b> ${studentName}</p>
+        <p><b>Lớp:</b> ${studentClass}</p>
+        <p><b>Điểm:</b> <span id="final-score-display">Đang tính...</span></p> 
+    `;
 
-                // Bắt đầu đếm ngược
-                startTimer();
-            });
-            
-            document.getElementById('quizForm').addEventListener('submit', submitQuiz);
+    resultDetails.innerHTML = '';
+    resultSection.style.display = 'block';
+    document.querySelector('.submit-btn').style.display = 'none';
+
+    // --- FIX: BỔ SUNG LOGIC CHẤM ĐIỂM ĐẦY ĐỦ ---
+    // Chấm điểm Phần 1: 12 câu, mỗi câu 0.25 điểm = 3 điểm
+    shuffledPart1Data.forEach((q) => {
+        const selectedOption = form.querySelector(`input[name="${q.id}"]:checked`);
+        if (selectedOption && selectedOption.value === q.answer) {
+            score += 0.25;
+        }
+    });
+
+    // Chấm điểm Phần 2: 4 câu, thang điểm lũy tiến, tối đa 7 điểm
+    shuffledPart2Data.forEach((q) => {
+        let correctSubAnswers = 0;
+        q.sub_questions.forEach(sub => {
+            const selectedOption = form.querySelector(`input[name="${q.id}_${sub.id}"]:checked`);
+            if (selectedOption && selectedOption.value === sub.answer) {
+                correctSubAnswers++;
+            }
         });
-    </script>
-</body>
-</html>
+        score += getQuestionScore(correctSubAnswers);
+    });
+    // --- KẾT THÚC PHẦN CHẤM ĐIỂM ---
+
+    const finalScore = score.toFixed(2);
+    document.getElementById('final-score-display').textContent = finalScore;
+    scoreElement.innerHTML = `<h2>Tổng điểm toàn bài là: ${finalScore}/10</h2>`;
+
+    // --- GỬI DỮ LIỆU ĐẾN GOOGLE FORM ---
+    // Lấy thông tin học sinh một lần nữa để đảm bảo dữ liệu là mới nhất
+    const studentNameValue = document.getElementById('studentName').value.trim();
+    const studentClassValue = document.getElementById('studentClass').value.trim();
+    
+    // Sử dụng FormData và fetch để gửi dữ liệu một cách hiện đại
+    const formData = new FormData();
+    formData.append(ENTRY_ID_NAME, studentNameValue);
+    formData.append(ENTRY_ID_CLASS, studentClassValue);
+    formData.append(ENTRY_ID_SCORE, finalScore);
+
+    fetch(GOOGLE_FORM_ACTION_URL, {
+        method: 'POST',
+        body: new URLSearchParams(formData),
+        mode: 'no-cors' // Gửi đi mà không cần chờ phản hồi, tránh lỗi CORS
+    }).catch(error => console.error('Lỗi khi gửi dữ liệu đến Google Form:', error));
+
+    document.getElementById('quizForm').querySelectorAll('input').forEach(input => input.disabled = true);
+    resultSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    buildQuiz();
+
+    const startBtn = document.getElementById('startBtn');
+    const userInfoContainer = document.getElementById('userInfoFormContainer');
+    const quizContainer = document.getElementById('quizContainer');
+
+    startBtn.addEventListener('click', function() {
+        const nameValue = document.getElementById('studentName').value.trim();
+        const classValue = document.getElementById('studentClass').value.trim();
+        
+        // Cập nhật biến toàn cục
+        studentName = nameValue;
+        studentClass = classValue;
+        
+        if (!nameValue || !classValue) { 
+            alert('Vui lòng điền đầy đủ Họ và Tên, và Lớp!');
+            return; 
+        }
+        
+        userInfoContainer.style.display = 'none';
+        quizContainer.style.display = 'block';
+
+        // Bắt đầu đếm ngược
+        startTimer();
+    });
+    
+    document.getElementById('quizForm').addEventListener('submit', submitQuiz);
+});
