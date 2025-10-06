@@ -164,7 +164,7 @@
         </div>
 
         <div id="quizContainer" style="display:none;">
-            <h1>ÔN TẬP TRẮC NGHIỆM</h1>
+            <h1>KIỂM TRA 15P</h1>
             <h2>Bài 3. PHẦN MỀM NGUỒN MỞ VÀ PHẦN MỀM CHẠY TRÊN INTERNET</h2>
             
             <div class="timer">Thời gian còn lại: <span id="countdown">15:00</span></div>
@@ -199,13 +199,14 @@
         const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc09y40H6BEgtLqI3R1Q04F8kljeqHX4Bij1G7sIlqk_Fmw5A/formResponse";
         
         // Entry ID của các trường nhập liệu trong Form của bạn
-        const ENTRY_ID_NAME = "entry.699633454";   // Dùng trường Trường (entry.699633454) để lưu Họ và Tên
-        const ENTRY_ID_CLASS = "entry.371774655";  // Dùng trường Lớp (entry.371774655) để lưu Lớp
-        const ENTRY_ID_SCORE = "entry.46168601";   // Dùng trường Điểm (entry.46168601) để lưu Điểm số
+        const ENTRY_ID_NAME = "entry.699633454";   // Dùng trường này để lưu Họ và Tên
+        const ENTRY_ID_CLASS = "entry.371774655";  // Dùng trường này để lưu Lớp
+        const ENTRY_ID_SCORE = "entry.46168601";   // Dùng trường này để lưu Điểm số
 
         // --- KHỐI DỮ LIỆU CÂU HỎI (Bài 3) ---
         const quizData = {
             part1: [
+                // --- PHẦN I: TRẮC NGHIỆM ĐƠN (12 CÂU) ---
                 { id: "q1", question: "Phần mềm được chuyển giao dưới dạng mã máy, khó đọc hiểu và nhằm mục đích bảo vệ chống đánh cắp ý tưởng được gọi là gì?", options: ["Phần mềm nguồn mở", "Phần mềm nguồn đóng", "Phần mềm tự do", "Phần mềm chạy trên Internet"], answer: "Phần mềm nguồn đóng", explanation: "Tài liệu định nghĩa: \"Phần mềm chuyển giao dưới dạng mã máy thường được gọi là phần mềm nguồn đóng\"." },
                 { id: "q2", question: "Theo tài liệu, ví dụ nào sau đây là một phần mềm nguồn mở?", options: ["Microsoft Word", "Photoshop", "Linux", "Acrobat Pro DC"], answer: "Linux", explanation: "Bảng 3.1 liệt kê Linux là phần mềm nguồn mở có chức năng tương đương hệ điều hành thương mại Windows." },
                 { id: "q3", question: "Loại giấy phép phần mềm nguồn mở nào được áp dụng rộng rãi nhất theo nội dung bài học?", options: ["Giấy phép công cộng GNU GPL", "Giấy phép Microsoft", "Giấy phép Adobe", "Giấy phép thương mại"], answer: "Giấy phép công cộng GNU GPL", explanation: "Tài liệu nêu rõ: \"Có nhiều loại giấy phép phần mềm nguồn mở, trong đó giấy phép công cộng GNU GPL (GNU General Public License) được áp dụng rộng rãi nhất\"." },
@@ -311,13 +312,14 @@
             timerInterval = setInterval(() => {
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    submitQuiz(null);
+                    // Lỗi ở đây: cần đảm bảo nó gọi submitQuiz
+                    submitQuiz(null); // Gọi submitQuiz khi hết giờ
                     return;
                 }
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                timeLeft--;
+                timeLeft--; // Lỗi đã sửa: decrement phải đặt sau khi hiển thị
             }, 1000);
         }
 
@@ -346,7 +348,7 @@
             const resultDetails = document.getElementById('resultDetails');
             const scoreElement = document.getElementById('score');
             
-            // Lấy thông tin người dùng cho phần hiển thị kết quả (CHỈ HIỂN THỊ TÊN, LỚP)
+            // Lấy thông tin người dùng cho phần hiển thị kết quả (CHỈ HIỂN THỊ TÊN, LỚP, ĐIỂM)
             const studentInfoResults = document.getElementById('studentInfoResults');
             studentInfoResults.innerHTML = `
                 <p><b>Họ và Tên:</b> ${studentName}</p>
@@ -364,19 +366,14 @@
             shuffledPart1Data.forEach((q, index) => {
                 const selectedOption = document.querySelector(`input[name="${q.id}"]:checked`);
                 const isCorrect = selectedOption && selectedOption.value === q.answer;
-
-                if (isCorrect) {
-                    score += 0.5;
-                }
-                // ... (Code hiển thị kết quả chi tiết)
+                if (isCorrect) { score += 0.5; }
             });
 
             shuffledPart2Data.forEach((q, index) => {
                 let correctCount = 0;
-                // ... (Code tính correctCount)
+                // Lấy correctCount...
                 const questionScore = getQuestionScore(correctCount);
                 score += questionScore;
-                // ... (Code hiển thị kết quả chi tiết)
             });
             
             const finalScore = score.toFixed(2);
@@ -386,19 +383,18 @@
 
             // --- GỬI DỮ LIỆU ĐẾN GOOGLE FORM ---
             
-            // Lấy Tên và Lớp (vì Trường không được nhập)
-            const studentNameValue = document.getElementById('studentName').value;
-            const studentClassValue = document.getElementById('studentClass').value;
+            const studentNameValue = document.getElementById('studentName').value.trim();
+            const studentClassValue = document.getElementById('studentClass').value.trim();
             
             // Tạo chuỗi truy vấn (Query String) thủ công, mã hóa dữ liệu
             const queryString = 
-                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentNameValue)}` + // Gửi Họ và Tên vào trường 'entry.699633454' (Trường)
-                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClassValue)}` + // Gửi Lớp vào trường 'entry.371774655' (Lớp)
-                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`; // Gửi Điểm số vào trường 'entry.46168601' (Điểm)
+                `&${ENTRY_ID_NAME}=${encodeURIComponent(studentNameValue)}` + // Gửi Họ và Tên
+                `&${ENTRY_ID_CLASS}=${encodeURIComponent(studentClassValue)}` + // Gửi Lớp
+                `&${ENTRY_ID_SCORE}=${encodeURIComponent(finalScore)}`; // Gửi Điểm số
 
             const fullUrl = GOOGLE_FORM_ACTION_URL + '?' + queryString;
             
-            // Kỹ thuật iframe để gửi dữ liệu Form
+            // Kỹ thuật iframe để gửi dữ liệu Form (đảm bảo gửi Form khi chạy trên GitHub Pages)
             const iframe = document.createElement('iframe');
             iframe.name = 'hidden_iframe';
             iframe.style.display = 'none';
@@ -411,8 +407,6 @@
             
             document.body.appendChild(form);
             form.submit();
-            
-            console.log('Dữ liệu đã được gửi qua iframe.');
             
             // --- KẾT THÚC GỬI DỮ LIỆU ---
 
@@ -434,8 +428,7 @@
                 
                 // Cập nhật biến toàn cục
                 studentName = nameValue;
-                // Gán giá trị mặc định cho trường bị ẩn (để tránh lỗi kiểm tra)
-                studentSchool = document.getElementById('studentSchool').value; 
+                // studentSchool được giữ là KHÔNG_SỬ_DỤNG
                 studentClass = classValue;
                 
                 // ĐÃ SỬA: Chỉ kiểm tra Tên và Lớp (vì Trường là hidden)
@@ -447,6 +440,7 @@
                 userInfoContainer.style.display = 'none';
                 quizContainer.style.display = 'block';
 
+                // Bắt đầu đếm ngược
                 startTimer();
             });
             
